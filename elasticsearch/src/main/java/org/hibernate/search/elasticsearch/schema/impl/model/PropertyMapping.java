@@ -28,7 +28,7 @@ public class PropertyMapping extends TypeMapping {
 
 	private Float boost;
 
-	private Index index;
+	private IndexType index;
 
 	@SerializedName("doc_values")
 	private Boolean docValues;
@@ -87,11 +87,11 @@ public class PropertyMapping extends TypeMapping {
 		this.boost = boost;
 	}
 
-	public Index getIndex() {
+	public IndexType getIndex() {
 		return index;
 	}
 
-	public void setIndex(Index index) {
+	public void setIndex(IndexType index) {
 		this.index = index;
 	}
 

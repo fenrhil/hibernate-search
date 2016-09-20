@@ -23,7 +23,7 @@ public class TypeMapping {
 	 */
 	private Map<String, PropertyMapping> properties;
 
-	private Dynamic dynamic;
+	private DynamicType dynamic;
 
 	public Map<String, PropertyMapping> getProperties() {
 		return properties == null ? null : Collections.unmodifiableMap( properties );
@@ -44,11 +44,11 @@ public class TypeMapping {
 		getInitializedProperties().remove( name );
 	}
 
-	public Dynamic getDynamic() {
+	public DynamicType getDynamic() {
 		return dynamic;
 	}
 
-	public void setDynamic(Dynamic dynamic) {
+	public void setDynamic(DynamicType dynamic) {
 		this.dynamic = dynamic;
 	}
 

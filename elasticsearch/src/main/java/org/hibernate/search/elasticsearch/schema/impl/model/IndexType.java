@@ -14,7 +14,7 @@ import com.google.gson.annotations.SerializedName;
  * @see https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-index.html
  * @author Yoann Rodiere
  */
-public enum Index {
+public enum IndexType {
 
 	@SerializedName("not_analyzed")
 	NOT_ANALYZED,

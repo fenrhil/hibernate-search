@@ -14,7 +14,7 @@ import org.apache.lucene.search.SortField;
 import org.hibernate.search.analyzer.impl.AnalyzerReference;
 import org.hibernate.search.elasticsearch.client.impl.BackendRequest;
 import org.hibernate.search.elasticsearch.client.impl.BulkRequestFailedException;
-import org.hibernate.search.elasticsearch.schema.impl.ElasticsearchMappingValidationException;
+import org.hibernate.search.elasticsearch.schema.impl.ElasticsearchSchemaValidationException;
 import org.hibernate.search.exception.SearchException;
 import org.hibernate.search.util.logging.impl.ClassFormatter;
 import org.jboss.logging.Logger.Level;
@@ -185,9 +185,9 @@ public interface Log extends org.hibernate.search.util.logging.impl.Log {
 	SearchException backtrackingWindowOverflow(int backtrackingLimit, int windowStartIndex, int requestedIndex);
 
 	@Message(id = ES_BACKEND_MESSAGES_START_ID + 32,
-			value = "Validation failed for mapping of index '%1$s'"
+			value = "Validation failed for schema of index '%1$s'"
 	)
-	SearchException mappingsValidationFailed(String indexName, @Cause Exception cause);
+	SearchException schemaValidationFailed(String indexName, @Cause Exception cause);
 
 	@Message(id = ES_BACKEND_MESSAGES_START_ID + 33,
 			value = "No mappings available from Elasticsearch for validation of index '%1$s'"
@@ -202,39 +202,40 @@ public interface Log extends org.hibernate.search.util.logging.impl.Log {
 	@Message(id = ES_BACKEND_MESSAGES_START_ID + 35,
 			value = "Missing mapping for entity type '%1$s'"
 	)
-	ElasticsearchMappingValidationException mappingMissing(String mappingName);
+	ElasticsearchSchemaValidationException mappingMissing(String mappingName);
 
 	@Message(id = ES_BACKEND_MESSAGES_START_ID + 36,
 			value = "Invalid mapping '%1$s'"
 	)
-	ElasticsearchMappingValidationException mappingInvalid(String mappingName, @Cause Exception cause);
+
+	ElasticsearchSchemaValidationException mappingInvalid(String mappingName, @Cause Exception cause);
 
 	@Message(id = ES_BACKEND_MESSAGES_START_ID + 37,
 			value = "Missing property mapping for property '%1$s'"
 	)
-	ElasticsearchMappingValidationException mappingPropertyMissing(String propertyName);
+	ElasticsearchSchemaValidationException mappingPropertyMissing(String propertyName);
 
 	@Message(id = ES_BACKEND_MESSAGES_START_ID + 38,
 			value = "Invalid property '%1$s'"
 	)
-	ElasticsearchMappingValidationException mappingPropertyInvalid(String propertyName, @Cause Exception e);
+	ElasticsearchSchemaValidationException mappingPropertyInvalid(String propertyName, @Cause Exception e);
 
 	@Message(id = ES_BACKEND_MESSAGES_START_ID + 39,
 			value = "Invalid value for attribute '%1$s'. Expected '%2$s', actual is '%3$s'"
 	)
-	ElasticsearchMappingValidationException mappingInvalidAttributeValue(String string, Object expectedValue, Object actualValue);
+	ElasticsearchSchemaValidationException mappingInvalidAttributeValue(String string, Object expectedValue, Object actualValue);
 
 	@Message(id = ES_BACKEND_MESSAGES_START_ID + 40,
 			value = "The output format (the first format in the '%1$s' attribute) is invalid. Expected '%2$s', actual is '%3$s'"
 	)
-	ElasticsearchMappingValidationException mappingInvalidOutputFormat(String string, String expectedValue, String actualValue);
+	ElasticsearchSchemaValidationException mappingInvalidOutputFormat(String string, String expectedValue, String actualValue);
 
 	@Message(id = ES_BACKEND_MESSAGES_START_ID + 41,
 			value = "Invalid formats for attribute '%1$s'. Every required formats must be in the list,"
 			+ " though it's not required to provide them in the same order, and the list must not contain unexpected formats."
 			+ " Expected '%2$s', actual is '%3$s', missing elements are '%4$s', unexpected elements are '%5$s'."
 	)
-	ElasticsearchMappingValidationException mappingInvalidInputFormat(String string, List<String> expectedValue,
+	ElasticsearchSchemaValidationException mappingInvalidInputFormat(String string, List<String> expectedValue,
 			List<String> actualValue, List<String> missingFormats, List<String> unexpectedFormats);
 
 }

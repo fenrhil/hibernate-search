@@ -14,8 +14,9 @@ import java.util.Objects;
 
 import org.hibernate.search.elasticsearch.logging.impl.Log;
 import org.hibernate.search.elasticsearch.schema.impl.model.DataType;
-import org.hibernate.search.elasticsearch.schema.impl.model.Dynamic;
-import org.hibernate.search.elasticsearch.schema.impl.model.Index;
+import org.hibernate.search.elasticsearch.schema.impl.model.DynamicType;
+import org.hibernate.search.elasticsearch.schema.impl.model.IndexMetadata;
+import org.hibernate.search.elasticsearch.schema.impl.model.IndexType;
 import org.hibernate.search.elasticsearch.schema.impl.model.PropertyMapping;
 import org.hibernate.search.elasticsearch.schema.impl.model.TypeMapping;
 import org.hibernate.search.util.impl.CollectionHelper;
@@ -24,13 +25,13 @@ import org.hibernate.search.util.logging.impl.LoggerFactory;
 import com.google.gson.JsonPrimitive;
 
 /**
- * The default {@link ElasticsearchMappingsValidator} implementation.
+ * The default {@link ElasticsearchSchemaValidator} implementation.
  * <strong>Important implementation note:</strong> unexpected attributes (i.e. those not mapped to a field in TypeMapping)
  * are totally ignored. This allows users to leverage Elasticsearch features that are not supported in
  * Hibernate Search, by setting those attributes manually.
  * @author Yoann Rodiere
  */
-public class DefaultElasticsearchMappingsValidator implements ElasticsearchMappingsValidator {
+public class DefaultElasticsearchSchemaValidator implements ElasticsearchSchemaValidator {
 
 	private static final Log LOG = LoggerFactory.make( Log.class );
 
@@ -45,16 +46,16 @@ public class DefaultElasticsearchMappingsValidator implements ElasticsearchMappi
 		DEFAULT_DATE_FORMAT = CollectionHelper.toImmutableList( formats );
 	}
 
-	public DefaultElasticsearchMappingsValidator() {
+	public DefaultElasticsearchSchemaValidator() {
 	}
 
 	@Override
-	public void validate(Map<String, TypeMapping> expectedTypeMappings, Map<String, TypeMapping> actualMappings) {
+	public void validate(IndexMetadata expectedIndexMetadata, IndexMetadata actualIndexMetadata) {
 		// Unknown mappings are ignored, we only validate expected mappings
-		for ( Map.Entry<String, TypeMapping> entry : expectedTypeMappings.entrySet() ) {
+		for ( Map.Entry<String, TypeMapping> entry : expectedIndexMetadata.getMappings().entrySet() ) {
 			String mappingName = entry.getKey();
 			TypeMapping expectedTypeMapping = entry.getValue();
-			TypeMapping actualTypeMapping = actualMappings.get( mappingName );
+			TypeMapping actualTypeMapping = actualIndexMetadata.getMappings().get( mappingName );
 
 			if ( actualTypeMapping == null ) {
 				throw LOG.mappingMissing( mappingName );
@@ -63,16 +64,16 @@ public class DefaultElasticsearchMappingsValidator implements ElasticsearchMappi
 			try {
 				validateTypeMapping( expectedTypeMapping, actualTypeMapping );
 			}
-			catch (ElasticsearchMappingValidationException e) {
+			catch (ElasticsearchSchemaValidationException e) {
 				throw LOG.mappingInvalid( mappingName, e );
 			}
 		}
 	}
 
 	private void validateTypeMapping(TypeMapping expectedMapping, TypeMapping actualMapping) {
-		Dynamic expectedDynamic = expectedMapping.getDynamic();
+		DynamicType expectedDynamic = expectedMapping.getDynamic();
 		if ( expectedDynamic != null ) { // If not provided, we don't care
-			validateEqualWithDefault( "dynamic", expectedDynamic, actualMapping.getDynamic(), Dynamic.TRUE );
+			validateEqualWithDefault( "dynamic", expectedDynamic, actualMapping.getDynamic(), DynamicType.TRUE );
 		}
 		validateTypeMappingProperties( expectedMapping, actualMapping );
 	}
@@ -201,7 +202,7 @@ public class DefaultElasticsearchMappingsValidator implements ElasticsearchMappi
 				try {
 					validatePropertyMapping( expectedPropertyMapping, actualPropertyMapping );
 				}
-				catch (ElasticsearchMappingValidationException e) {
+				catch (ElasticsearchSchemaValidationException e) {
 					throw LOG.mappingPropertyInvalid( propertyName, e );
 				}
 			}
@@ -217,10 +218,10 @@ public class DefaultElasticsearchMappingsValidator implements ElasticsearchMappi
 
 		validateEqualWithDefault( "boost", expectedMapping.getBoost(), actualMapping.getBoost(), DEFAULT_FLOAT_DELTA, 1.0f );
 
-		Index expectedIndex = expectedMapping.getIndex();
-		if ( !Index.NO.equals( expectedIndex ) ) { // If we don't need an index, we don't care
+		IndexType expectedIndex = expectedMapping.getIndex();
+		if ( !IndexType.NO.equals( expectedIndex ) ) { // If we don't need an index, we don't care
 			// See Elasticsearch doc: this attribute's default value depends on the data type.
-			Index indexDefault = DataType.STRING.equals( expectedMapping.getType() ) ? Index.ANALYZED : Index.NOT_ANALYZED;
+			IndexType indexDefault = DataType.STRING.equals( expectedMapping.getType() ) ? IndexType.ANALYZED : IndexType.NOT_ANALYZED;
 			validateEqualWithDefault( "index", expectedIndex, actualMapping.getIndex(), indexDefault );
 		}
 

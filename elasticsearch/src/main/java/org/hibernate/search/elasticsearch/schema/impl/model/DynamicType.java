@@ -14,7 +14,7 @@ import com.google.gson.annotations.SerializedName;
  * @see https://www.elastic.co/guide/en/elasticsearch/reference/current/dynamic.html
  * @author Yoann Rodiere
  */
-public enum Dynamic {
+public enum DynamicType {
 
 	@SerializedName("true")
 	TRUE,

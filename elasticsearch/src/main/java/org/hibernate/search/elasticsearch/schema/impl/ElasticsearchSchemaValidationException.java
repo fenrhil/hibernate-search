@@ -12,20 +12,20 @@ import org.hibernate.search.exception.SearchException;
 /**
  * @author Yoann Rodiere
  */
-public class ElasticsearchMappingValidationException extends SearchException {
+public class ElasticsearchSchemaValidationException extends SearchException {
 
-	public ElasticsearchMappingValidationException() {
+	public ElasticsearchSchemaValidationException() {
 	}
 
-	public ElasticsearchMappingValidationException(String message) {
+	public ElasticsearchSchemaValidationException(String message) {
 		super( message );
 	}
 
-	public ElasticsearchMappingValidationException(String message, Throwable cause) {
+	public ElasticsearchSchemaValidationException(String message, Throwable cause) {
 		super( message, cause );
 	}
 
-	public ElasticsearchMappingValidationException(Throwable cause) {
+	public ElasticsearchSchemaValidationException(Throwable cause) {
 		super( cause );
 	}
 

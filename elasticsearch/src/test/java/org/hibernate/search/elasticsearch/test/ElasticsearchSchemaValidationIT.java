@@ -26,7 +26,7 @@ import org.hibernate.search.annotations.Store;
 import org.hibernate.search.elasticsearch.cfg.ElasticsearchEnvironment;
 import org.hibernate.search.elasticsearch.cfg.IndexSchemaManagementStrategy;
 import org.hibernate.search.elasticsearch.impl.ElasticsearchIndexManager;
-import org.hibernate.search.elasticsearch.schema.impl.ElasticsearchMappingValidationException;
+import org.hibernate.search.elasticsearch.schema.impl.ElasticsearchSchemaValidationException;
 import org.hibernate.search.elasticsearch.testutil.TestElasticsearchClient;
 import org.hibernate.search.exception.SearchException;
 import org.hibernate.search.test.SearchInitializationTestBase;
@@ -37,11 +37,11 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * Unit tests for {@link ElasticsearchIndexManager}'s mappings validation feature.
+ * Tests for {@link ElasticsearchIndexManager}'s schema validation feature.
  *
  * @author Yoann Rodiere
  */
-public class ElasticsearchIndexMappingValidationIT extends SearchInitializationTestBase {
+public class ElasticsearchSchemaValidationIT extends SearchInitializationTestBase {
 
 	private static final String VALIDATION_FAILED_MESSAGE_ID = "HSEARCH400032";
 	private static final String MISSING_MAPPINGS_MESSAGE_ID = "HSEARCH400034";
@@ -142,7 +142,7 @@ public class ElasticsearchIndexMappingValidationIT extends SearchInitializationT
 		thrown.expect(
 				isException( SearchException.class )
 						.withMessage( VALIDATION_FAILED_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( MISSING_MAPPING_MESSAGE_ID )
 				.build()
 
@@ -169,9 +169,9 @@ public class ElasticsearchIndexMappingValidationIT extends SearchInitializationT
 		thrown.expect(
 				isException( SearchException.class )
 						.withMessage( VALIDATION_FAILED_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_MAPPING_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_ATTRIBUTE_MESSAGE_ID )
 						.withMessage( "dynamic" )
 				.build()
@@ -199,9 +199,9 @@ public class ElasticsearchIndexMappingValidationIT extends SearchInitializationT
 		thrown.expect(
 				isException( SearchException.class )
 						.withMessage( VALIDATION_FAILED_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_MAPPING_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_ATTRIBUTE_MESSAGE_ID )
 						.withMessage( "dynamic" )
 				.build()
@@ -223,9 +223,9 @@ public class ElasticsearchIndexMappingValidationIT extends SearchInitializationT
 		thrown.expect(
 				isException( SearchException.class )
 						.withMessage( VALIDATION_FAILED_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_MAPPING_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( MISSING_PROPERTY_MESSAGE_ID )
 				.build()
 		);
@@ -252,9 +252,9 @@ public class ElasticsearchIndexMappingValidationIT extends SearchInitializationT
 		thrown.expect(
 				isException( SearchException.class )
 						.withMessage( VALIDATION_FAILED_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_MAPPING_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( MISSING_PROPERTY_MESSAGE_ID )
 				.build()
 		);
@@ -280,12 +280,12 @@ public class ElasticsearchIndexMappingValidationIT extends SearchInitializationT
 		thrown.expect(
 				isException( SearchException.class )
 						.withMessage( VALIDATION_FAILED_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_MAPPING_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_PROPERTY_MESSAGE_ID )
 						.withMessage( "myField" )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_ATTRIBUTE_MESSAGE_ID )
 						.withMessage( "type" )
 				.build()
@@ -313,12 +313,12 @@ public class ElasticsearchIndexMappingValidationIT extends SearchInitializationT
 		thrown.expect(
 				isException( SearchException.class )
 						.withMessage( VALIDATION_FAILED_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_MAPPING_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_PROPERTY_MESSAGE_ID )
 						.withMessage( "myField" )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_ATTRIBUTE_MESSAGE_ID )
 						.withMessage( "index" )
 				.build()
@@ -346,12 +346,12 @@ public class ElasticsearchIndexMappingValidationIT extends SearchInitializationT
 		thrown.expect(
 				isException( SearchException.class )
 						.withMessage( VALIDATION_FAILED_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_MAPPING_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_PROPERTY_MESSAGE_ID )
 						.withMessage( "myField" )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_OUTPUT_FORMAT_MESSAGE_ID )
 						.withMessage( "format" )
 				.build()
@@ -379,12 +379,12 @@ public class ElasticsearchIndexMappingValidationIT extends SearchInitializationT
 		thrown.expect(
 				isException( SearchException.class )
 						.withMessage( VALIDATION_FAILED_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_MAPPING_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_PROPERTY_MESSAGE_ID )
 						.withMessage( "myField" )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_INPUT_FORMAT_MESSAGE_ID )
 						.withMessage( "format" )
 				.build()
@@ -412,12 +412,12 @@ public class ElasticsearchIndexMappingValidationIT extends SearchInitializationT
 		thrown.expect(
 				isException( SearchException.class )
 						.withMessage( VALIDATION_FAILED_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_MAPPING_MESSAGE_ID )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_PROPERTY_MESSAGE_ID )
 						.withMessage( "myField" )
-				.causedBy( ElasticsearchMappingValidationException.class )
+				.causedBy( ElasticsearchSchemaValidationException.class )
 						.withMessage( INVALID_INPUT_FORMAT_MESSAGE_ID )
 						.withMessage( "format" )
 				.build()

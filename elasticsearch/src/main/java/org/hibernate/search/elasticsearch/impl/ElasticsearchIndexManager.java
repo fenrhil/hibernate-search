@@ -11,7 +11,6 @@ import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -36,12 +35,13 @@ import org.hibernate.search.elasticsearch.client.impl.BackendRequest;
 import org.hibernate.search.elasticsearch.client.impl.BackendRequestProcessor;
 import org.hibernate.search.elasticsearch.client.impl.JestClient;
 import org.hibernate.search.elasticsearch.logging.impl.Log;
-import org.hibernate.search.elasticsearch.schema.impl.DefaultElasticsearchMappingsValidator;
-import org.hibernate.search.elasticsearch.schema.impl.ElasticsearchMappingValidationException;
-import org.hibernate.search.elasticsearch.schema.impl.ElasticsearchMappingsValidator;
+import org.hibernate.search.elasticsearch.schema.impl.DefaultElasticsearchSchemaValidator;
+import org.hibernate.search.elasticsearch.schema.impl.ElasticsearchSchemaValidationException;
+import org.hibernate.search.elasticsearch.schema.impl.ElasticsearchSchemaValidator;
 import org.hibernate.search.elasticsearch.schema.impl.model.DataType;
-import org.hibernate.search.elasticsearch.schema.impl.model.Dynamic;
-import org.hibernate.search.elasticsearch.schema.impl.model.Index;
+import org.hibernate.search.elasticsearch.schema.impl.model.DynamicType;
+import org.hibernate.search.elasticsearch.schema.impl.model.IndexMetadata;
+import org.hibernate.search.elasticsearch.schema.impl.model.IndexType;
 import org.hibernate.search.elasticsearch.schema.impl.model.PropertyMapping;
 import org.hibernate.search.elasticsearch.schema.impl.model.TypeMapping;
 import org.hibernate.search.elasticsearch.spi.ElasticsearchIndexManagerType;
@@ -348,7 +348,8 @@ public class ElasticsearchIndexManager implements IndexManager, RemoteAnalyzerPr
 
 	// TODO What happens if several nodes in a cluster try to create the mappings?
 	private void putIndexMappings() {
-		for ( Map.Entry<String, TypeMapping> entry : createTypeMappings().entrySet() ) {
+		IndexMetadata indexMetadata = createIndexMetadata();
+		for ( Map.Entry<String, TypeMapping> entry : indexMetadata.getMappings().entrySet() ) {
 			String mappingName = entry.getKey();
 			TypeMapping mapping = entry.getValue();
 
@@ -360,7 +361,7 @@ public class ElasticsearchIndexManager implements IndexManager, RemoteAnalyzerPr
 			String mappingAsJson = gson.toJson( mapping );
 
 			PutMapping putMapping = new PutMapping.Builder(
-					actualIndexName,
+					indexMetadata.getName(),
 					mappingName,
 					mappingAsJson
 			)
@@ -376,16 +377,16 @@ public class ElasticsearchIndexManager implements IndexManager, RemoteAnalyzerPr
 	}
 
 	private void validateIndexMappings() {
-		ElasticsearchMappingsValidator validator = new DefaultElasticsearchMappingsValidator();
+		ElasticsearchSchemaValidator validator = new DefaultElasticsearchSchemaValidator();
 		try {
-			validator.validate( createTypeMappings(), getCurrentTypeMappings() );
+			validator.validate( createIndexMetadata(), getCurrentIndexMetadata() );
 		}
-		catch (ElasticsearchMappingValidationException e) {
-			throw LOG.mappingsValidationFailed( actualIndexName, e );
+		catch (ElasticsearchSchemaValidationException e) {
+			throw LOG.schemaValidationFailed( actualIndexName, e );
 		}
 	}
 
-	private Map<String, TypeMapping> getCurrentTypeMappings() {
+	private IndexMetadata getCurrentIndexMetadata() {
 		GetMapping getMapping = new GetMapping.Builder()
 				.build();
 
@@ -400,31 +401,35 @@ public class ElasticsearchIndexManager implements IndexManager, RemoteAnalyzerPr
 				throw LOG.mappingsMissing( actualIndexName );
 			}
 			Type mapType = STRING_TO_TYPE_MAPPING_MAP_TYPE_TOKEN.getType();
-			return gsonService.getGson().fromJson( mappings, mapType );
+			IndexMetadata indexMetadata = new IndexMetadata();
+			indexMetadata.setName( actualIndexName );
+			indexMetadata.setMappings( gsonService.getGson().<Map<String, TypeMapping>>fromJson( mappings, mapType ) );
+			return indexMetadata;
 		}
 		catch (RuntimeException e) {
 			throw LOG.elasticsearchMappingRetrievalForValidationFailed( e );
 		}
 	}
 
-	private Map<String, TypeMapping> createTypeMappings() {
-		Map<String, TypeMapping> result = new LinkedHashMap<>();
+	private IndexMetadata createIndexMetadata() {
+		IndexMetadata index = new IndexMetadata();
+		index.setName( actualIndexName );
 		for ( Class<?> entityType : containedEntityTypes ) {
-			result.put( entityType.getName(), createTypeMapping( entityType ) );
+			index.putMapping( entityType.getName(), createTypeMapping( entityType ) );
 		}
-		return result;
+		return index;
 	}
 
 	private TypeMapping createTypeMapping(Class<?> entityType) {
 		EntityIndexBinding descriptor = searchIntegrator.getIndexBinding( entityType );
 		TypeMapping result = new TypeMapping();
 
-		result.setDynamic( Dynamic.STRICT );
+		result.setDynamic( DynamicType.STRICT );
 
 		if ( multitenancyEnabled ) {
 			PropertyMapping tenantId = new PropertyMapping();
 			tenantId.setType( DataType.STRING );
-			tenantId.setIndex( Index.NOT_ANALYZED );
+			tenantId.setIndex( IndexType.NOT_ANALYZED );
 			result.addProperty( DocumentBuilderIndexedEntity.TENANT_ID_FIELDNAME, tenantId );
 		}
 
@@ -542,7 +547,7 @@ public class ElasticsearchIndexManager implements IndexManager, RemoteAnalyzerPr
 				// the fields potentially created for the spatial hash queries
 				PropertyMapping propertyMapping = new PropertyMapping();
 				propertyMapping.setType( DataType.STRING );
-				propertyMapping.setIndex( Index.NOT_ANALYZED );
+				propertyMapping.setIndex( IndexType.NOT_ANALYZED );
 
 				TypeMapping parentMapping = getOrCreateParentMapping( rootMapping, propertyPath );
 				parentMapping.addProperty( propertyName, propertyMapping );
@@ -558,7 +563,7 @@ public class ElasticsearchIndexManager implements IndexManager, RemoteAnalyzerPr
 
 		addTypeOptions( propertyMapping, facetMetadata );
 		propertyMapping.setStore( false );
-		propertyMapping.setIndex( Index.NOT_ANALYZED );
+		propertyMapping.setIndex( IndexType.NOT_ANALYZED );
 
 		// Do this last, when we're sure no exception will be thrown for this mapping
 		TypeMapping parentMapping = getOrCreateParentMapping( rootMapping, propertyPath );
@@ -570,30 +575,30 @@ public class ElasticsearchIndexManager implements IndexManager, RemoteAnalyzerPr
 	 */
 	private void addIndexOptions(PropertyMapping propertyMapping, EntityIndexBinding binding, String propertyPath,
 			DataType fieldType, Field.Index index, AnalyzerReference analyzerReference) {
-		Index elasticsearchIndex;
+		IndexType elasticsearchIndex;
 		switch ( index ) {
 			case ANALYZED:
 			case ANALYZED_NO_NORMS:
-				elasticsearchIndex = canTypeBeAnalyzed( fieldType ) ? Index.ANALYZED : Index.NOT_ANALYZED;
+				elasticsearchIndex = canTypeBeAnalyzed( fieldType ) ? IndexType.ANALYZED : IndexType.NOT_ANALYZED;
 				break;
 			case NOT_ANALYZED:
 			case NOT_ANALYZED_NO_NORMS:
-				elasticsearchIndex = Index.NOT_ANALYZED;
+				elasticsearchIndex = IndexType.NOT_ANALYZED;
 				break;
 			case NO:
-				elasticsearchIndex = Index.NO;
+				elasticsearchIndex = IndexType.NO;
 				break;
 			default:
 				throw new AssertionFailure( "Unexpected index type: " + index );
 		}
 		propertyMapping.setIndex( elasticsearchIndex );
 
-		if ( Index.NO.equals( elasticsearchIndex ) && FieldHelper.isSortableField( binding, propertyPath ) ) {
+		if ( IndexType.NO.equals( elasticsearchIndex ) && FieldHelper.isSortableField( binding, propertyPath ) ) {
 			// We must use doc values in order to enable sorting on non-indexed fields
 			propertyMapping.setDocValues( true );
 		}
 
-		if ( Index.ANALYZED.equals( elasticsearchIndex ) && analyzerReference != null ) {
+		if ( IndexType.ANALYZED.equals( elasticsearchIndex ) && analyzerReference != null ) {
 			String analyzerName = analyzerName( binding.getDocumentBuilder().getBeanClass(), propertyPath, analyzerReference );
 			propertyMapping.setAnalyzer( analyzerName );
 		}
