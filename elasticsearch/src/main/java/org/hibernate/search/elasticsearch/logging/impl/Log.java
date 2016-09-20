@@ -14,7 +14,7 @@ import org.apache.lucene.search.SortField;
 import org.hibernate.search.analyzer.impl.AnalyzerReference;
 import org.hibernate.search.elasticsearch.client.impl.BackendRequest;
 import org.hibernate.search.elasticsearch.client.impl.BulkRequestFailedException;
-import org.hibernate.search.elasticsearch.impl.ElasticsearchMappingValidationException;
+import org.hibernate.search.elasticsearch.schema.impl.ElasticsearchMappingValidationException;
 import org.hibernate.search.exception.SearchException;
 import org.hibernate.search.util.logging.impl.ClassFormatter;
 import org.jboss.logging.Logger.Level;

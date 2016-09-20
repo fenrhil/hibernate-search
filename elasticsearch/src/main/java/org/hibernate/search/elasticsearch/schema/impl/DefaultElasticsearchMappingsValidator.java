@@ -4,7 +4,7 @@
  * License: GNU Lesser General Public License (LGPL), version 2.1 or later
  * See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
  */
-package org.hibernate.search.elasticsearch.impl;
+package org.hibernate.search.elasticsearch.schema.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,12 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.hibernate.search.elasticsearch.impl.mapping.DataType;
-import org.hibernate.search.elasticsearch.impl.mapping.Dynamic;
-import org.hibernate.search.elasticsearch.impl.mapping.Index;
-import org.hibernate.search.elasticsearch.impl.mapping.PropertyMapping;
-import org.hibernate.search.elasticsearch.impl.mapping.TypeMapping;
 import org.hibernate.search.elasticsearch.logging.impl.Log;
+import org.hibernate.search.elasticsearch.schema.impl.model.DataType;
+import org.hibernate.search.elasticsearch.schema.impl.model.Dynamic;
+import org.hibernate.search.elasticsearch.schema.impl.model.Index;
+import org.hibernate.search.elasticsearch.schema.impl.model.PropertyMapping;
+import org.hibernate.search.elasticsearch.schema.impl.model.TypeMapping;
 import org.hibernate.search.util.impl.CollectionHelper;
 import org.hibernate.search.util.logging.impl.LoggerFactory;
 

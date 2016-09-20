@@ -26,7 +26,7 @@ import org.hibernate.search.annotations.Store;
 import org.hibernate.search.elasticsearch.cfg.ElasticsearchEnvironment;
 import org.hibernate.search.elasticsearch.cfg.IndexSchemaManagementStrategy;
 import org.hibernate.search.elasticsearch.impl.ElasticsearchIndexManager;
-import org.hibernate.search.elasticsearch.impl.ElasticsearchMappingValidationException;
+import org.hibernate.search.elasticsearch.schema.impl.ElasticsearchMappingValidationException;
 import org.hibernate.search.elasticsearch.testutil.TestElasticsearchClient;
 import org.hibernate.search.exception.SearchException;
 import org.hibernate.search.test.SearchInitializationTestBase;
