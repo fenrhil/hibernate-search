@@ -224,4 +224,17 @@ public interface Log extends org.hibernate.search.util.logging.impl.Log {
 	)
 	ElasticsearchMappingValidationException mappingInvalidAttributeValue(String string, Object expectedValue, Object actualValue);
 
+	@Message(id = ES_BACKEND_MESSAGES_START_ID + 40,
+			value = "The output format (the first format in the '%1$s' attribute) is invalid. Expected '%2$s', actual is '%3$s'"
+	)
+	ElasticsearchMappingValidationException mappingInvalidOutputFormat(String string, String expectedValue, String actualValue);
+
+	@Message(id = ES_BACKEND_MESSAGES_START_ID + 41,
+			value = "Invalid formats for attribute '%1$s'. Every required formats must be in the list,"
+			+ " though it's not required to provide them in the same order, and the list must not contain unexpected formats."
+			+ " Expected '%2$s', actual is '%3$s', missing elements are '%4$s', unexpected elements are '%5$s'."
+	)
+	ElasticsearchMappingValidationException mappingInvalidInputFormat(String string, List<String> expectedValue,
+			List<String> actualValue, List<String> missingFormats, List<String> unexpectedFormats);
+
 }
