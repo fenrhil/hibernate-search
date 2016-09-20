@@ -4,7 +4,7 @@
  * License: GNU Lesser General Public License (LGPL), version 2.1 or later
  * See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
  */
-package org.hibernate.search.elasticsearch.impl;
+package org.hibernate.search.elasticsearch.util.impl;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -33,7 +33,7 @@ import org.hibernate.search.metadata.NumericFieldSettingsDescriptor.NumericEncod
  *
  * @author Gunnar Morling
  */
-class FieldHelper {
+public class FieldHelper {
 
 	private static final Pattern DOT = Pattern.compile( "\\." );
 
@@ -135,7 +135,7 @@ class FieldHelper {
 		}
 	}
 
-	static ExtendedFieldType getType(EntityIndexBinding indexBinding, DocumentFieldMetadata fieldMetadata) {
+	public static ExtendedFieldType getType(EntityIndexBinding indexBinding, DocumentFieldMetadata fieldMetadata) {
 		String fieldName = fieldMetadata.getFieldName();
 
 		Class<?> propertyClass = getPropertyClass( indexBinding, fieldName );
@@ -192,7 +192,7 @@ class FieldHelper {
 		}
 	}
 
-	static ExtendedFieldType getType(BridgeDefinedField field) {
+	public static ExtendedFieldType getType(BridgeDefinedField field) {
 		FieldType type = field.getType();
 		if ( type == null ) {
 			return null;
@@ -217,7 +217,7 @@ class FieldHelper {
 		}
 	}
 
-	static boolean isNumeric(DocumentFieldMetadata field) {
+	public static boolean isNumeric(DocumentFieldMetadata field) {
 		if ( field.isNumeric() ) {
 			return true;
 		}
@@ -231,7 +231,7 @@ class FieldHelper {
 		return false;
 	}
 
-	static String[] getFieldNameParts(String fieldName) {
+	public static String[] getFieldNameParts(String fieldName) {
 		boolean isEmbeddedField = isEmbeddedField( fieldName );
 		return isEmbeddedField ? DOT.split( fieldName ) : new String[]{ fieldName };
 	}
@@ -262,7 +262,7 @@ class FieldHelper {
 		return null;
 	}
 
-	static DocumentFieldMetadata getFieldMetadata(EntityIndexBinding indexBinding, String fieldName) {
+	public static DocumentFieldMetadata getFieldMetadata(EntityIndexBinding indexBinding, String fieldName) {
 		if ( indexBinding.getDocumentBuilder().getIdentifierName().equals( fieldName ) ) {
 			return indexBinding.getDocumentBuilder()
 					.getTypeMetadata()
