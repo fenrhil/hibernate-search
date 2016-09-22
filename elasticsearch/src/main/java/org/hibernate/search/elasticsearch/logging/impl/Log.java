@@ -6,6 +6,9 @@
  */
 package org.hibernate.search.elasticsearch.logging.impl;
 
+import static org.jboss.logging.Logger.Level.ERROR;
+import static org.jboss.logging.Logger.Level.INFO;
+
 import java.util.List;
 
 import org.apache.lucene.search.Filter;
@@ -242,5 +245,17 @@ public interface Log extends org.hibernate.search.util.logging.impl.Log {
 			value = "Could not merge mappings in index '%1$s'"
 	)
 	SearchException schemaMergeFailed(String indexName, @Cause Exception cause);
+
+	@LogMessage(level = INFO)
+	@Message(id = ES_BACKEND_MESSAGES_START_ID + 40,
+			value = "Starting Elasticsearch schema export"
+	)
+	void schemaExportStarting();
+
+	@LogMessage(level = ERROR)
+	@Message(id = ES_BACKEND_MESSAGES_START_ID + 41,
+			value = "Elasticsearch schema export failed"
+	)
+	void schemaExportFailed(@Cause Exception e);
 
 }
