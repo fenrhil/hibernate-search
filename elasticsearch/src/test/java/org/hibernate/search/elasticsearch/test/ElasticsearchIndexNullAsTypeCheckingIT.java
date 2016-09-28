@@ -6,10 +6,9 @@
  */
 package org.hibernate.search.elasticsearch.test;
 
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -21,114 +20,70 @@ import org.hibernate.search.elasticsearch.cfg.ElasticsearchEnvironment;
 import org.hibernate.search.elasticsearch.cfg.IndexSchemaManagementStrategy;
 import org.hibernate.search.elasticsearch.impl.ElasticsearchIndexManager;
 import org.hibernate.search.exception.SearchException;
-import org.hibernate.search.test.DefaultTestResourceManager;
-import org.hibernate.search.test.util.TestConfiguration;
+import org.hibernate.search.test.SearchInitializationTestBase;
+import org.hibernate.search.test.util.ImmutableTestConfiguration;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * Unit tests for {@link ElasticsearchIndexManager}'s indexNullAs type checking.
+ * Tests for {@link ElasticsearchIndexManager}'s indexNullAs type checking.
  *
  * @author Yoann Rodiere
  */
-@RunWith(Suite.class)
-@SuiteClasses(value = {
-		ElasticsearchIndexNullAsTypeCheckingIT.BooleanFailureTest.class,
-		ElasticsearchIndexNullAsTypeCheckingIT.DateFailureTest.class
-})
-public class ElasticsearchIndexNullAsTypeCheckingIT {
+public class ElasticsearchIndexNullAsTypeCheckingIT extends SearchInitializationTestBase {
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 
-	protected abstract static class AbstractIndexNullAsFailureTest implements TestConfiguration {
-		@Rule
-		public ExpectedException thrown = ExpectedException.none();
-
-		private DefaultTestResourceManager testResourceManager;
-
-		protected void init() {
-			getTestResourceManager().openSessionFactory();
-		}
-
-		// synchronized due to lazy initialization (source: SearchTestBase.java)
-		private synchronized DefaultTestResourceManager getTestResourceManager() {
-			if ( testResourceManager == null ) {
-				testResourceManager = new DefaultTestResourceManager( this, this.getClass() );
-			}
-			return testResourceManager;
-		}
-
-		@Override
-		public void configure(Map<String, Object> settings) {
-			settings.put(
-					ElasticsearchEnvironment.INDEX_SCHEMA_MANAGEMENT_STRATEGY,
-					IndexSchemaManagementStrategy.RECREATE
-					);
-		}
-
-		@Override
-		public Set<String> multiTenantIds() {
-			// Empty by default; specify more than one tenant to enable multi-tenancy
-			return Collections.emptySet();
-		}
+	private void init(Class<?>... annotatedClasses) {
+		Map<String, Object> settings = new HashMap<>();
+		settings.put(
+				"hibernate.search.default." + ElasticsearchEnvironment.INDEX_SCHEMA_MANAGEMENT_STRATEGY,
+				IndexSchemaManagementStrategy.RECREATE.name()
+		);
+		init( new ImmutableTestConfiguration( settings, annotatedClasses ) );
 	}
 
-	public static class BooleanFailureTest extends AbstractIndexNullAsFailureTest {
-		@Test
-		public void indexNullAs_invalid_boolean() {
-			thrown.expect( SearchException.class );
-			thrown.expectMessage( "HSEARCH400027" );
-			thrown.expectMessage( "Boolean" );
-			thrown.expectMessage( "myField" );
+	@Test
+	public void indexNullAs_invalid_boolean() {
+		thrown.expect( SearchException.class );
+		thrown.expectMessage( "HSEARCH400027" );
+		thrown.expectMessage( "Boolean" );
+		thrown.expectMessage( "myField" );
 
-			init();
-		}
-
-		@Override
-		public Class<?>[] getAnnotatedClasses() {
-			return new Class[] { BooleanFailureTestEntity.class };
-		}
-
-		@Indexed
-		@Entity
-		public static class BooleanFailureTestEntity {
-			@DocumentId
-			@Id
-			Long id;
-
-			@Field(indexNullAs = "foo")
-			boolean myField;
-		}
+		init( BooleanFailureTestEntity.class );
 	}
 
-	public static class DateFailureTest extends AbstractIndexNullAsFailureTest {
-		@Test
-		public void indexNullAs_invalid_boolean() {
-			thrown.expect( SearchException.class );
-			thrown.expectMessage( "HSEARCH400028" );
-			thrown.expectMessage( "Date" );
-			thrown.expectMessage( "myField" );
+	@Indexed
+	@Entity
+	public static class BooleanFailureTestEntity {
+		@DocumentId
+		@Id
+		Long id;
 
-			init();
-		}
+		@Field(indexNullAs = "foo")
+		boolean myField;
+	}
 
-		@Override
-		public Class<?>[] getAnnotatedClasses() {
-			return new Class[] { DateFailureTestEntity.class };
-		}
+	@Test
+	public void indexNullAs_invalid_date() {
+		thrown.expect( SearchException.class );
+		thrown.expectMessage( "HSEARCH400028" );
+		thrown.expectMessage( "Date" );
+		thrown.expectMessage( "myField" );
 
-		@Indexed
-		@Entity
-		public static class DateFailureTestEntity {
-			@DocumentId
-			@Id
-			Long id;
+		init( DateFailureTestEntity.class );
+	}
 
-			@Field(indexNullAs = "01/01/2013") // Expected format is ISO-8601 (yyyy-MM-dd'T'HH:mm:ssZ)
-			Date myField;
-		}
+	@Indexed
+	@Entity
+	public static class DateFailureTestEntity {
+		@DocumentId
+		@Id
+		Long id;
+
+		@Field(indexNullAs = "01/01/2013") // Expected format is ISO-8601 (yyyy-MM-dd'T'HH:mm:ssZ)
+		Date myField;
 	}
 
 }
