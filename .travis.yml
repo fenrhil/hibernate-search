@@ -49,4 +49,4 @@ after_success:
   - ./mvnw $BUILD_OPTIONS coveralls:report
 before_cache:
   # Do not put the artifacts we just built into the cache
-  - rm -r $HOME/.m2/repository/org/hibernate/search/v6poc/
+  - rm -r $HOME/.m2/repository/org/hibernate/search/
