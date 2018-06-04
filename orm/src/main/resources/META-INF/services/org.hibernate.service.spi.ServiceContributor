@@ -1,0 +1,2 @@
+org.hibernate.search.entity.orm.impl.HibernateSearchContextServiceContributor
+org.hibernate.search.entity.orm.bootstrap.impl.ExtendedBeanManagerSynchronizerContributor

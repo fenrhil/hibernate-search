@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.hibernate.search</groupId>
+        <artifactId>hibernate-search-parent</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
+        <relativePath>../../..</relativePath>
+    </parent>
+    <artifactId>hibernate-search-util-internal-integrationtest-parent</artifactId>
+    <packaging>pom</packaging>
+
+    <name>Hibernate Search Utils - Internal - Integration Tests - Parent POM</name>
+    <description>Parent POM of Hibernate Search integration testing utilities</description>
+
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+    </properties>
+
+    <modules>
+        <module>common</module>
+        <module>orm</module>
+        <module>sharedresources</module>
+    </modules>
+
+</project>
+

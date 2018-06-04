@@ -1,0 +1,1360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ~ Hibernate Search, full-text search for your domain model
+ ~
+ ~ License: GNU Lesser General Public License (LGPL), version 2.1 or later
+ ~ See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.hibernate.search</groupId>
+    <artifactId>hibernate-search-parent</artifactId>
+    <version>6.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Hibernate Search Parent POM</name>
+    <description>Hibernate Search Parent POM</description>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License</name>
+            <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+            <comments>See also: http://hibernate.org/license</comments>
+        </license>
+    </licenses>
+
+    <modules>
+        <module>build-config</module>
+        <module>util/internal/common</module>
+        <module>util/internal/test</module>
+        <module>engine</module>
+        <module>backend-elasticsearch</module>
+        <module>backend-lucene</module>
+        <module>mapper-pojo</module>
+        <module>mapper-javabean</module>
+        <module>mapper-protobuf</module>
+        <module>orm</module>
+        <module>util/internal/integrationtest</module>
+        <module>integrationtest</module>
+        <module>documentation</module>
+        <module>reports</module>
+    </modules>
+
+    <properties>
+        <version.org.hibernate>5.3.1.Final</version.org.hibernate>
+        <version.org.hibernate.commons.annotations>5.0.1.Final</version.org.hibernate.commons.annotations>
+        <version.javax.persistence>2.2</version.javax.persistence>
+        <version.javax.enterprise>2.0</version.javax.enterprise>
+
+        <version.org.elasticsearch.client>5.6.6</version.org.elasticsearch.client>
+        <version.com.google.code.gson>2.8.0</version.com.google.code.gson>
+        <version.com.google.protobuf>3.0.2</version.com.google.protobuf>
+        <version.org.apache.lucene>7.2.1</version.org.apache.lucene>
+
+        <version.org.slf4j>1.7.25</version.org.slf4j>
+        <version.log4j>1.2.16</version.log4j>
+        <version.org.jboss.logging.jboss-logging>3.3.0.Final</version.org.jboss.logging.jboss-logging>
+        <version.org.jboss.logging.jboss-logging-tools>2.0.1.Final</version.org.jboss.logging.jboss-logging-tools>
+
+        <!-- Test dependencies -->
+
+        <version.junit>4.12</version.junit>
+        <version.org.easymock>3.5.1</version.org.easymock>
+        <version.io.takari.junit>1.2.7</version.io.takari.junit>
+        <version.com.h2database>1.4.178</version.com.h2database>
+        <version.org.assertj.assertj-core>3.9.1</version.org.assertj.assertj-core>
+        <version.org.skyscreamer.jsonassert>1.2.3</version.org.skyscreamer.jsonassert>
+
+        <!-- Maven plugins versions -->
+
+        <version.buildhelper.plugin>3.0.0</version.buildhelper.plugin>
+        <version.checkstyle.plugin>2.17</version.checkstyle.plugin>
+        <version.clean.plugin>3.0.0</version.clean.plugin>
+        <version.compiler.plugin>3.7.0</version.compiler.plugin>
+        <version.dependency.plugin>3.0.2</version.dependency.plugin>
+        <version.deploy.plugin>2.8.2</version.deploy.plugin>
+        <version.org.eclipse.m2e.lifecycle-mapping>1.0.0</version.org.eclipse.m2e.lifecycle-mapping>
+        <version.enforcer.plugin>3.0.0-M1</version.enforcer.plugin>
+        <version.forbiddenapis.plugin>2.5</version.forbiddenapis.plugin>
+        <version.install.plugin>2.5.2</version.install.plugin>
+        <version.jar.plugin>3.0.2</version.jar.plugin>
+        <version.javadoc.plugin>3.0.0</version.javadoc.plugin>
+        <version.processor.plugin>3.2.0</version.processor.plugin>
+        <version.resources.plugin>3.0.2</version.resources.plugin>
+        <version.site.plugin>3.6</version.site.plugin>
+        <version.source.plugin>3.0.1</version.source.plugin>
+        <!-- Surefire versions are a minefield of bugs, so depending on context we need to choose a different one -->
+        <version.surefire.plugin>2.20.1</version.surefire.plugin>
+        <version.failsafe.plugin>${version.surefire.plugin}</version.failsafe.plugin>
+        <version.jacoco.plugin>0.8.0</version.jacoco.plugin>
+        <version.coveralls.plugin>4.3.0</version.coveralls.plugin>
+
+        <version.com.buschmais.jqassistant.plugin>1.3.0</version.com.buschmais.jqassistant.plugin>
+
+        <!--
+            Please don't change the name of this property, it may be used and
+            overridden by a CI job of the Checkstyle project so that they can
+            check for regressions. Which is obviously good for us, too.
+         -->
+        <puppycrawl.checkstyle.version>8.8</puppycrawl.checkstyle.version>
+
+        <!-- Asciidoctor -->
+
+        <version.asciidoctor.plugin>1.5.6</version.asciidoctor.plugin>
+        <version.org.hibernate.infra.hibernate-asciidoctor-theme>1.0.2.Final</version.org.hibernate.infra.hibernate-asciidoctor-theme>
+        <version.org.jruby>9.1.15.0</version.org.jruby>
+        <version.org.asciidoctor.asciidoctorj>1.5.6</version.org.asciidoctor.asciidoctorj>
+        <version.org.asciidoctor.asciidoctorj-pdf>1.5.0-alpha.16</version.org.asciidoctor.asciidoctorj-pdf>
+
+        <!-- Build settings -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.testTarget>${maven.compiler.target}</maven.compiler.testTarget>
+        <maven.compiler.testSource>${maven.compiler.source}</maven.compiler.testSource>
+        <!--
+                Options to override the compiler arguments directly on the compiler argument line to separate between what
+                the IDE understands as the source level and what the Maven compiler actually use.
+        -->
+        <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
+        <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
+        <maven.compiler.argument.testTarget>${maven.compiler.testTarget}</maven.compiler.argument.testTarget>
+        <maven.compiler.argument.testSource>${maven.compiler.testSource}</maven.compiler.argument.testSource>
+
+        <!--
+            The path to the root project directory.
+            This property is set by the build-helper plugin.
+            We initialize it to some crude, potentially wrong value,
+            because the Sonar Maven plugin uses this property indirectly,
+            but ignores any change made by other plugins.
+            This default value is the best we can do without the help of a Maven plugin.
+
+            Useful resources:
+             - https://www.mojohaus.org/build-helper-maven-plugin/rootlocation-mojo.html
+         -->
+        <rootProject.directory>${user.dir}</rootProject.directory>
+
+        <!--
+            The path to a single merged JaCoCo coverage file including all of the coverage data for all modules.
+            This file is mainly necessary for Sonar, see Sonar configuration below for an explanation.
+         -->
+        <jacoco.mergedExecFilePath>${rootProject.directory}/target/jacoco-merged.exec</jacoco.mergedExecFilePath>
+
+        <!-- JDK version required for the build; we target 1.8 since Hibernate ORM 5.3 requires Java 8 -->
+        <jdk.min.version>${maven.compiler.argument.source}</jdk.min.version>
+        <maven.min.version>3.2.3</maven.min.version>
+
+        <!-- Can be overridden by subprojects if dependency convergence cannot be achieved -->
+        <enforcer.dependencyconvergence.skip>false</enforcer.dependencyconvergence.skip>
+
+        <!-- Eclipse plugin options -->
+
+        <m2e.apt.activation>jdt_apt</m2e.apt.activation>
+
+        <!-- Sonar options -->
+        <!--
+            We want to take into account coverage data from integration tests from other projects as well.
+            This requires to use a single destination file for ITs, because:
+             - Integration tests cover code from other modules.
+             - The Sonar plugin computes coverage when inspecting each module,
+               and by default only takes into account JaCoCo coverage files from the inspected module.
+               Thus it ignores some relevant ITs by default.
+             - Even when configured, the Sonar plugin only accept an *explicit* list of JaCoCo coverage files
+               (no wildcards).
+               Thus we cannot easily configure the Sonar plugin to inspect JaCoCo coverage files from other modules,
+               unless we somehow aggregate all of the coverage data into a single, shared JaCoCo coverage file.
+            The chosen solution was to make the "reports" module invoke jacoco's "merge" goal
+            to merge the coverage files into a single file, and configure sonar to only inspect that file.
+
+            Useful resources to understand what is going on (caution, not everything is up-to-date):
+             - https://docs.sonarqube.org/display/SONAR/Analysis+Parameters
+             - https://docs.sonarqube.org/display/PLUG/Usage+of+JaCoCo+with+Java+Plugin
+             - https://www.devcon5.ch/en/blog/2015/05/29/multi-module-integration-test-coverage-sonar-jacoco/
+             - http://javamemento.blogspot.fr/2016/02/sonar-jacoco-maven-multi-module.html
+             - https://github.com/SonarSource/sonar-scanning-examples/blob/master/sonarqube-scanner-maven/pom.xml
+             - https://stackoverflow.com/a/49528226/6692043
+             - https://www.eclemma.org/jacoco/trunk/doc/merge-mojo.html
+         -->
+        <sonar.jacoco.reportPaths>${jacoco.mergedExecFilePath}</sonar.jacoco.reportPaths>
+        <!--
+            Exclude build code and integration tests defined in the main source (utils, Showcases, Backend TCK)
+            from coverage computation.
+         -->
+        <sonar.coverage.exclusions>
+            **/org/hibernate/checkstyle/**,
+            **/org/hibernate/search/util/impl/test/**,
+            **/org/hibernate/search/util/impl/integrationtest/**,
+            **/org/hibernate/search/integrationtest/**
+        </sonar.coverage.exclusions>
+        <!--
+            Exclude build code, unit tests and integration tests from duplication analysis.
+         -->
+        <sonar.cpd.exclusions>
+            **/org/hibernate/checkstyle/**,
+            **/src/test/java/**,
+            **/org/hibernate/search/integrationtest/**
+        </sonar.cpd.exclusions>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hibernate-search-util-internal-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hibernate-search-util-internal-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hibernate-search-engine</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hibernate-search-backend-elasticsearch</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hibernate-search-backend-lucene</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hibernate-search-mapper-pojo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hibernate-search-mapper-javabean</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hibernate-search-mapper-protobuf</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hibernate-search-orm</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hibernate-search-integrationtest-backend-elasticsearch</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hibernate-search-integrationtest-backend-lucene</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hibernate-search-integrationtest-mapper-pojo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hibernate-search-integrationtest-orm</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hibernate-search-integrationtest-showcase-library</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${version.org.hibernate}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.persistence</groupId>
+                <artifactId>javax.persistence-api</artifactId>
+                <version>${version.javax.persistence}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.enterprise</groupId>
+                <artifactId>cdi-api</artifactId>
+                <version>${version.javax.enterprise}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate.common</groupId>
+                <artifactId>hibernate-commons-annotations</artifactId>
+                <version>${version.org.hibernate.commons.annotations}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>elasticsearch-rest-client</artifactId>
+                <version>${version.org.elasticsearch.client}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>elasticsearch-rest-client-sniffer</artifactId>
+                <version>${version.org.elasticsearch.client}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${version.com.google.code.gson}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>${version.com.google.protobuf}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.logging</groupId>
+                <artifactId>jboss-logging</artifactId>
+                <version>${version.org.jboss.logging.jboss-logging}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.logging</groupId>
+                <artifactId>jboss-logging-annotations</artifactId>
+                <version>${version.org.jboss.logging.jboss-logging-tools}</version>
+                <scope>provided</scope>
+                <optional>true</optional>
+            </dependency>
+
+            <!-- Lucene backend -->
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-core</artifactId>
+                <version>${version.org.apache.lucene}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-analyzers-common</artifactId>
+                <version>${version.org.apache.lucene}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-join</artifactId>
+                <version>${version.org.apache.lucene}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-sandbox</artifactId>
+                <version>${version.org.apache.lucene}</version>
+            </dependency>
+
+            <!-- Test -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.takari.junit</groupId>
+                <artifactId>takari-cpsuite</artifactId>
+                <version>${version.io.takari.junit}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>${version.org.easymock}</version>
+            </dependency>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${version.log4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${version.org.assertj.assertj-core}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.skyscreamer</groupId>
+                <artifactId>jsonassert</artifactId>
+                <version>${version.org.skyscreamer.jsonassert}</version>
+            </dependency>
+
+            <!-- JDBC drivers -->
+            <!-- Profile-specific driver, used in most database-sensitive integration tests -->
+            <dependency>
+                <groupId>${jdbc.driver.groupId}</groupId>
+                <artifactId>${jdbc.driver.artifactId}</artifactId>
+                <version>${jdbc.driver.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <showWarnings>true</showWarnings>
+                    <source>${maven.compiler.argument.source}</source>
+                    <target>${maven.compiler.argument.target}</target>
+                    <testSource>${maven.compiler.argument.testSource}</testSource>
+                    <testTarget>${maven.compiler.argument.testTarget}</testTarget>
+                    <encoding>UTF-8</encoding>
+                    <!-- needed because of compiler bug: http://bugs.sun.com/view_bug.do?bug_id=6512707 -->
+                    <proc>none</proc>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>set-root-location-property</id>
+                        <goals>
+                            <goal>rootlocation</goal>
+                        </goals>
+                        <configuration>
+                            <rootLocationProperty>rootProject.directory</rootLocationProperty>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-common-rules</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[${jdk.min.version},)</version>
+                                </requireJavaVersion>
+                                <requireMavenVersion>
+                                    <version>${maven.min.version}</version>
+                                </requireMavenVersion>
+                                <banDuplicatePomDependencyVersions />
+                            </rules>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>enforce-dependency-convergence</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${enforcer.dependencyconvergence.skip}</skip>
+                            <rules>
+                                <DependencyConvergence />
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>de.thetaphi</groupId>
+                <artifactId>forbiddenapis</artifactId>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${version.clean.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>${version.install.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${version.resources.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${version.site.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${version.jar.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <!-- Needing 3.6.2 at least because of MCOMPILER-294 -->
+                    <version>${version.compiler.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${version.buildhelper.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${version.deploy.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${version.enforcer.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${version.javadoc.plugin}</version>
+                    <configuration>
+                        <quiet>true</quiet>
+                        <verbose>false</verbose>
+                        <tags>
+                            <tag>
+                                <name>hsearch.experimental</name>
+                                <placement>a</placement>
+                                <head>Experimental</head>
+                            </tag>
+                        </tags>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>de.thetaphi</groupId>
+                    <artifactId>forbiddenapis</artifactId>
+                    <version>${version.forbiddenapis.plugin}</version>
+                    <executions>
+                        <execution>
+                            <id>verify-forbidden-apis</id>
+                            <configuration>
+                                <targetVersion>10</targetVersion>
+                                <!-- if the used Java version is too new, don't fail, just do nothing: -->
+                                <failOnUnsupportedJava>false</failOnUnsupportedJava>
+                                <excludes>
+                                    <!-- JBoss Logger formats messages according to default Locale (bug or feature?) -->
+                                    <exclude>**/*_$logger.class</exclude>
+                                    <!-- JBoss message bundles format messages -->
+                                    <exclude>**/*_$bundle.class</exclude>
+                                    <!-- Easymock uses StringBuffer, we can't do anything about that -->
+                                    <exclude>**/EasyMockUtils*.class</exclude>
+                                </excludes>
+                                <bundledSignatures>
+                                    <!-- This will automatically choose the right signatures based on 'targetVersion': -->
+                                    <bundledSignature>jdk-unsafe</bundledSignature>
+                                    <bundledSignature>jdk-deprecated</bundledSignature>
+                                    <bundledSignature>jdk-system-out</bundledSignature>
+                                    <bundledSignature>jdk-non-portable</bundledSignature>
+                                    <bundledSignature>jdk-internal</bundledSignature>
+                                </bundledSignatures>
+                                <failOnMissingClasses>false</failOnMissingClasses>
+                                <failOnUnresolvableSignatures>false</failOnUnresolvableSignatures>
+                                <!--
+                                The method SharedSessionContract#getTransaction() should never be used
+                                as it is only reliable in certain configurations.
+                                 -->
+                                <signaturesArtifacts>
+                                    <signaturesArtifact>
+                                        <groupId>org.hibernate.search</groupId>
+                                        <artifactId>hibernate-search-build-config</artifactId>
+                                        <version>${project.version}</version>
+                                        <type>jar</type>
+                                        <path>forbidden-runtime.txt</path>
+                                    </signaturesArtifact>
+                                </signaturesArtifacts>
+                            </configuration>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>verify-forbidden-test-apis</id>
+                            <configuration>
+                                <targetVersion>${maven.compiler.argument.testTarget}</targetVersion>
+                                <!-- if the used Java version is too new, don't fail, just do nothing: -->
+                                <failOnUnsupportedJava>false</failOnUnsupportedJava>
+                                <failOnUnresolvableSignatures>false</failOnUnresolvableSignatures>
+                                <excludes>
+                                    <!--
+                                        Only those two classes are allowed to build search integrators,
+                                        because they do it right (with guaranteed calls to close at the end of the test).
+                                    -->
+                                    <exclude>**/org/hibernate/search/testsupport/junit/SearchFactoryHolder.class</exclude>
+                                    <exclude>**/org/hibernate/search/testsupport/junit/SearchIntegratorResource.class</exclude>
+                                </excludes>
+                                <bundledSignatures>
+                                    <!-- This will automatically choose the right signatures based on 'targetVersion': -->
+                                    <bundledSignature>jdk-unsafe</bundledSignature>
+                                    <bundledSignature>jdk-deprecated</bundledSignature>
+                                    <bundledSignature>jdk-non-portable</bundledSignature>
+                                    <bundledSignature>jdk-internal</bundledSignature>
+                                </bundledSignatures>
+                                <signaturesArtifacts>
+                                    <signaturesArtifact>
+                                        <groupId>org.hibernate.search</groupId>
+                                        <artifactId>hibernate-search-build-config</artifactId>
+                                        <version>${project.version}</version>
+                                        <type>jar</type>
+                                        <path>forbidden-tests.txt</path>
+                                    </signaturesArtifact>
+                                </signaturesArtifacts>
+                            </configuration>
+                            <phase>test-compile</phase>
+                            <goals>
+                                <goal>testCheck</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${version.checkstyle.plugin}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.hibernate.search</groupId>
+                            <artifactId>hibernate-search-build-config</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                        <!--
+                             force SLF4J dependency to align
+                             Maven internals and CheckStyle's
+                             see https://github.com/jcgay/maven-color/wiki/Problems
+                             If that causes problem, that can be removed
+                             but maven-color won't work -->
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>${puppycrawl.checkstyle.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.slf4j</groupId>
+                            <artifactId>jcl-over-slf4j</artifactId>
+                            <version>${version.org.slf4j}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.slf4j</groupId>
+                            <artifactId>slf4j-jdk14</artifactId>
+                            <version>${version.org.slf4j}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <!-- Location is relative to the classpath -->
+                        <configLocation>checkstyle.xml</configLocation>
+                        <consoleOutput>true</consoleOutput>
+                        <failsOnError>true</failsOnError>
+                        <violationSeverity>error</violationSeverity>
+                        <includeTestResources>true</includeTestResources>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                        <resourceIncludes>**/*.xml,**/*.properties</resourceIncludes>
+                        <!-- generated respectively copied code -->
+                        <excludes>
+                            **/Generated.java,**/TypeHelper*.java,**/MatchSuppressor.java,**/CommentSuppressor.java,**/NeverSuppress.java,
+                            **/Log_$logger.java
+                        </excludes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>check-style</id>
+                            <phase>verify</phase>
+                            <!-- not using checkstyle:checkstyle here, as for
+                                some reason checkstyle:check finds more errors -->
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.bsc.maven</groupId>
+                    <artifactId>maven-processor-plugin</artifactId>
+                    <version>${version.processor.plugin}</version>
+                    <executions>
+                        <!-- Run annotation processors on src/main/java sources -->
+                        <execution>
+                            <id>process</id>
+                            <goals>
+                                <goal>process</goal>
+                            </goals>
+                            <phase>generate-sources</phase>
+                            <configuration>
+                                <processors>
+                                    <processor>org.jboss.logging.processor.apt.LoggingToolsProcessor</processor>
+                                </processors>
+                                <!-- Disable usage of the @Generated annotation: too much trouble as requirements are different across JDK8 vs JDK9 -->
+                                <!-- See also: https://github.com/jboss-logging/jboss-logging-tools/pull/60#issuecomment-293088198 -->
+                                <compilerArguments>-source ${maven.compiler.argument.source} -target ${maven.compiler.argument.target} -Aorg.jboss.logging.tools.addGeneratedAnnotation=false</compilerArguments>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.jboss.logging</groupId>
+                            <artifactId>jboss-logging-processor</artifactId>
+                            <version>${version.org.jboss.logging.jboss-logging-tools}</version>
+                            <scope>compile</scope>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${version.surefire.plugin}</version>
+                    <configuration>
+                        <forkCount>1</forkCount>
+                        <reuseForks>true</reuseForks>
+                        <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                        <runOrder>alphabetical</runOrder>
+                        <argLine>${surefire.jacoco.args}</argLine>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${version.failsafe.plugin}</version>
+                    <configuration>
+                        <forkCount>1</forkCount>
+                        <reuseForks>true</reuseForks>
+                        <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                        <runOrder>alphabetical</runOrder>
+                        <argLine>${failsafe.jacoco.args}</argLine>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${version.jacoco.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.eluder.coveralls</groupId>
+                    <artifactId>coveralls-maven-plugin</artifactId>
+                    <version>${version.coveralls.plugin}</version>
+                    <configuration>
+                        <relativeReportDirs>
+                            <relativeReportDir>jacoco-aggregate</relativeReportDir>
+                        </relativeReportDirs>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${version.dependency.plugin}</version>
+                    <executions>
+                        <execution>
+                            <!-- See http://blog.sonatype.com/2008/04/how-to-share-resources-across-projects-in-maven/ -->
+                            <!--
+                                 This will only be effective if
+                                 hibernate-search-util-internal-integrationtest-sharedresources
+                                 is actually a project dependency
+                              -->
+                            <id>unpack-shared-test-build-resources</id>
+                            <goals>
+                                <goal>unpack-dependencies</goal>
+                            </goals>
+                            <phase>generate-test-resources</phase>
+                            <configuration>
+                                <outputDirectory>${project.build.directory}/</outputDirectory>
+                                <includeGroupIds>${project.groupId}</includeGroupIds>
+                                <includeArtifacIds>hibernate-search-util-internal-integrationtest-sharedresources</includeArtifacIds>
+                                <includeTypes>zip</includeTypes>
+                                <excludeTransitive>true</excludeTransitive>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.asciidoctor</groupId>
+                    <artifactId>asciidoctor-maven-plugin</artifactId>
+                    <version>${version.asciidoctor.plugin}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.jruby</groupId>
+                            <artifactId>jruby-complete</artifactId>
+                            <version>${version.org.jruby}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.asciidoctor</groupId>
+                            <artifactId>asciidoctorj</artifactId>
+                            <version>${version.org.asciidoctor.asciidoctorj}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.asciidoctor</groupId>
+                            <artifactId>asciidoctorj-pdf</artifactId>
+                            <version>${version.org.asciidoctor.asciidoctorj-pdf}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>3.4.0.905</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <!-- The profiles `skippingAllTests` and `skippingIntegrationTests` are currently duplicates,
+            as one can't trigger the profile activation on either/or property -->
+        <profile>
+            <id>skippingAllTests</id>
+            <activation>
+                <property>
+                    <name>skipTests</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- This is to avoid starting an Elasticsearch node for each module needing integration test -->
+                <test.elasticsearch.host.provided>true</test.elasticsearch.host.provided>
+            </properties>
+        </profile>
+        <profile>
+            <id>skippingIntegrationTests</id>
+            <activation>
+                <property>
+                    <name>skipITs</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- This is to avoid starting an Elasticsearch node for each module needing integration test -->
+                <test.elasticsearch.host.provided>true</test.elasticsearch.host.provided>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>IDEA</id>
+            <!--
+            Dependencies to allow easy project import in IntelliJ IDEA.
+            These should not be listed as project dependencies to users
+            but are necessary during compile time as they include the
+            JBoss Logger annotation processor.
+            -->
+            <activation>
+                <!-- This is a trick to have the profile automatically activated by IDEA -->
+                <property>
+                    <name>idea.maven.embedder.version</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.logging</groupId>
+                    <artifactId>jboss-logging-processor</artifactId>
+                    <version>${version.org.jboss.logging.jboss-logging-tools}</version>
+                    <scope>compile</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>eclipse</id>
+            <activation>
+                <property>
+                    <!-- This is a trick to have the profile automatically activated by Eclipse -->
+                    <name>m2e.version</name>
+                </property>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <!--
+                                This plugin's configuration is used in m2e only.
+                                We want to configure this in a separate profile because the plugin doesn't really exist
+                                and Maven will complain because it doesn't find it if executed outside of Eclipse.
+                             -->
+                            <groupId>org.eclipse.m2e</groupId>
+                            <artifactId>lifecycle-mapping</artifactId>
+                            <version>${version.org.eclipse.m2e.lifecycle-mapping}</version>
+                            <configuration>
+                                <lifecycleMappingMetadata>
+                                    <pluginExecutions>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.apache.maven.plugins</groupId>
+                                                <artifactId>maven-dependency-plugin</artifactId>
+                                                <versionRange>[2.1,)</versionRange>
+                                                <goals>
+                                                    <goal>unpack</goal>
+                                                    <goal>unpack-dependencies</goal>
+                                                    <goal>build-classpath</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.apache.felix</groupId>
+                                                <artifactId>maven-bundle-plugin</artifactId>
+                                                <versionRange>[2.3.7,)</versionRange>
+                                                <goals>
+                                                    <goal>manifest</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.apache.servicemix.tooling</groupId>
+                                                <artifactId>depends-maven-plugin</artifactId>
+                                                <versionRange>[1.2,)</versionRange>
+                                                <goals>
+                                                    <goal>generate-depends-file</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.codehaus.mojo</groupId>
+                                                <artifactId>build-helper-maven-plugin</artifactId>
+                                                <versionRange>[1.9.1,)</versionRange>
+                                                <goals>
+                                                    <goal>parse-version</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>de.thetaphi</groupId>
+                                                <artifactId>forbiddenapis</artifactId>
+                                                <versionRange>[1.8,)</versionRange>
+                                                <goals>
+                                                    <goal>check</goal>
+                                                    <goal>testCheck</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.wildfly.build</groupId>
+                                                <artifactId>wildfly-server-provisioning-maven-plugin</artifactId>
+                                                <versionRange>[1.2.6.Final,)</versionRange>
+                                                <goals>
+                                                    <goal>build</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                    </pluginExecutions>
+                                </lifecycleMappingMetadata>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+
+        <profile>
+            <id>coverage</id>
+            <properties>
+                <!--
+                    Caution, we use @{...} for late property evaluation here:
+                    http://maven.apache.org/surefire/maven-surefire-plugin/faq.html#late-property-evaluation
+                    This is necessary for Jacoco to work as expected.
+                    However, we wrap the @{...} references into two early-evaluated properties
+                    because in certain environments (IntelliJ IDEA), the use of late property evaluation
+                    is not supported and breaks test execution.
+                    This is because IntelliJ tries to parse the POM to retrieve the surefire/failsafe
+                    argLine and pass them to the test execution directly,
+                    but then fails to evaluate "@{...}" references, resulting in errors.
+                    As a result, this profile will not work in IntelliJ,
+                    but we don't need JaCoCo in IntelliJ anyway.
+                 -->
+                <surefire.jacoco.args>@{surefire.jacoco.args.lateEval}</surefire.jacoco.args>
+                <failsafe.jacoco.args>@{failsafe.jacoco.args.lateEval}</failsafe.jacoco.args>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/Log_$logger.class</exclude>
+                            </excludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>jacoco-prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                                <configuration>
+                                    <propertyName>surefire.jacoco.args.lateEval</propertyName>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>jacoco-prepare-prepare-agent-integration</id>
+                                <goals>
+                                    <goal>prepare-agent-integration</goal>
+                                </goals>
+                                <configuration>
+                                    <propertyName>failsafe.jacoco.args.lateEval</propertyName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>jqassistant</id>
+            <!--
+            To run the analysis on the engine module and launch a Neo4j server accessible at http://localhost:7474/, run:
+                mvn -pl engine jqassistant:scan jqassistant:server -Pjqassistant
+            To run the analysis on the engine module:
+                mvn clean install -pl engine -Pjqassistant -DskipTests=true
+            Our rules are in jqassistant/rules.xml.
+            -->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.buschmais.jqassistant</groupId>
+                        <artifactId>jqassistant-maven-plugin</artifactId>
+                        <version>${version.com.buschmais.jqassistant.plugin}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>scan</goal>
+                                    <goal>analyze</goal>
+                                </goals>
+                                <configuration>
+                                    <warnOnSeverity>INFO</warnOnSeverity>
+                                    <failOnSeverity>MAJOR</failOnSeverity>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- =============================== -->
+        <!-- Elasticsearch IT profiles       -->
+        <!-- =============================== -->
+        <!--
+             Different profiles are needed to handle the environment setup (which is handled in Maven,
+             on contrary to the various database profiles).
+
+             To run tests against a different version of Elasticsearch, use the appropriate profile
+             and provide the Elasticsearch version:
+
+                 mvn clean test -Pelasticsearch-2.0 -Dtest.elasticsearch.version=2.1.0
+          -->
+
+        <!-- Elasticsearch [2.0,2.2) test environment -->
+        <profile>
+            <id>elasticsearch-2.0</id>
+            <properties>
+                <test.elasticsearch.mavenPlugin.version>2.2</test.elasticsearch.mavenPlugin.version>
+                <test.elasticsearch.host.version>2.0.0</test.elasticsearch.host.version>
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-dependency-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>unpack-es-plugins</id>
+                                    <phase>pre-integration-test</phase>
+                                    <goals>
+                                        <goal>unpack</goal>
+                                    </goals>
+                                    <configuration>
+                                        <skip>${test.elasticsearch.host.provided}</skip>
+                                        <artifactItems>
+                                            <!-- Delete-by-query is a plugin in Elasticsearch 2.x -->
+                                            <artifactItem>
+                                                <groupId>org.elasticsearch.plugin</groupId>
+                                                <artifactId>delete-by-query</artifactId>
+                                                <version>${test.elasticsearch.host.version}</version>
+                                                <type>zip</type>
+                                                <overWrite>true</overWrite>
+                                                <outputDirectory>${project.build.directory}/_ES_PLUGINS_/delete-by-query</outputDirectory>
+                                            </artifactItem>
+                                        </artifactItems>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        <plugin>
+                            <groupId>com.github.alexcojocaru</groupId>
+                            <artifactId>elasticsearch-maven-plugin</artifactId>
+                            <version>${test.elasticsearch.mavenPlugin.version}</version>
+                            <configuration>
+                                <skip>${test.elasticsearch.host.provided}</skip>
+                                <tcpPort>9300</tcpPort>
+                                <pluginsPath>${project.build.directory}/_ES_PLUGINS_</pluginsPath>
+                                <outputDirectory>${project.build.directory}/elastisearch0</outputDirectory>
+                                <configPath>${project.build.directory}/elasticsearch-maven-plugin/2.0/configuration/</configPath>
+                            </configuration>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.elasticsearch</groupId>
+                                    <artifactId>elasticsearch</artifactId>
+                                    <version>${test.elasticsearch.host.version}</version>
+                                </dependency>
+
+                                <!-- Groovy is in a core module named "org.elasticsearch:elasticsearch-groovy" in Elasticsearch 2.0.x and 2.1.x
+                                     Also, in ES 2.0/2.1, core modules are not located in the plugin directory as with newer versions, but are
+                                     simply expected to be in the classpath.
+                                -->
+                                <dependency>
+                                    <groupId>org.elasticsearch</groupId>
+                                    <artifactId>elasticsearch-groovy</artifactId>
+                                    <version>${test.elasticsearch.host.version}</version>
+                                    <type>jar</type>
+                                </dependency>
+                            </dependencies>
+                            <executions>
+                                <execution >
+                                    <id>start-elasticsearch</id>
+                                    <phase>pre-integration-test</phase>
+                                    <goals>
+                                        <goal>start</goal>
+                                    </goals>
+                                </execution>
+                                <execution>
+                                    <id>stop-elasticsearch</id>
+                                    <phase>post-integration-test</phase>
+                                    <goals>
+                                        <goal>stop</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+
+        <!-- Elasticsearch 2.2+ test environment -->
+        <profile>
+            <id>elasticsearch-2.2</id>
+            <properties>
+                <test.elasticsearch.mavenPlugin.version>2.2</test.elasticsearch.mavenPlugin.version>
+                <test.elasticsearch.host.version>2.4.6</test.elasticsearch.host.version>
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-dependency-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>unpack-es-plugins</id>
+                                    <phase>pre-integration-test</phase>
+                                    <goals>
+                                        <goal>unpack</goal>
+                                    </goals>
+                                    <configuration>
+                                        <skip>${test.elasticsearch.host.provided}</skip>
+                                        <artifactItems>
+                                            <!-- Delete-by-query is a plugin in Elasticsearch 2.x -->
+                                            <artifactItem>
+                                                <groupId>org.elasticsearch.plugin</groupId>
+                                                <artifactId>delete-by-query</artifactId>
+                                                <version>${test.elasticsearch.host.version}</version>
+                                                <type>zip</type>
+                                                <overWrite>true</overWrite>
+                                                <outputDirectory>${project.build.directory}/_ES_PLUGINS_/delete-by-query</outputDirectory>
+                                            </artifactItem>
+                                            <!-- Groovy is in a plugin named "org.elasticsearch.module:lang-groovy" in Elasticsearch 2.2+ -->
+                                            <artifactItem>
+                                                <groupId>org.elasticsearch.module</groupId>
+                                                <artifactId>lang-groovy</artifactId>
+                                                <version>${test.elasticsearch.host.version}</version>
+                                                <type>zip</type>
+                                                <overWrite>true</overWrite>
+                                                <outputDirectory>${project.build.directory}/_ES_PLUGINS_/lang-groovy</outputDirectory>
+                                            </artifactItem>
+                                        </artifactItems>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        <plugin>
+                            <groupId>com.github.alexcojocaru</groupId>
+                            <artifactId>elasticsearch-maven-plugin</artifactId>
+                            <version>${test.elasticsearch.mavenPlugin.version}</version>
+                            <configuration>
+                                <skip>${test.elasticsearch.host.provided}</skip>
+                                <tcpPort>9300</tcpPort>
+                                <pluginsPath>${project.build.directory}/_ES_PLUGINS_</pluginsPath>
+                                <outputDirectory>${project.build.directory}/elastisearch0</outputDirectory>
+                                <configPath>${project.build.directory}/elasticsearch-maven-plugin/2.0/configuration/</configPath>
+                            </configuration>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.elasticsearch</groupId>
+                                    <artifactId>elasticsearch</artifactId>
+                                    <version>${test.elasticsearch.host.version}</version>
+                                </dependency>
+                            </dependencies>
+                            <executions>
+                                <execution >
+                                    <id>start-elasticsearch</id>
+                                    <phase>pre-integration-test</phase>
+                                    <goals>
+                                        <goal>start</goal>
+                                    </goals>
+                                </execution>
+                                <execution>
+                                    <id>stop-elasticsearch</id>
+                                    <phase>post-integration-test</phase>
+                                    <goals>
+                                        <goal>stop</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+
+        <!-- Elasticsearch 5.0/5.1 test environment -->
+        <profile>
+            <id>elasticsearch-5.0</id>
+            <properties>
+                <test.elasticsearch.mavenPlugin.version>5.7</test.elasticsearch.mavenPlugin.version>
+                <test.elasticsearch.host.version>5.1.2</test.elasticsearch.host.version>
+                <test.elasticsearch.host.url>http://localhost:9200</test.elasticsearch.host.url>
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>com.github.alexcojocaru</groupId>
+                            <artifactId>elasticsearch-maven-plugin</artifactId>
+                            <version>${test.elasticsearch.mavenPlugin.version}</version>
+                            <configuration>
+                                <skip>${test.elasticsearch.host.provided}</skip>
+                                <version>${test.elasticsearch.host.version}</version>
+                                <timeout>90</timeout><!-- Make it work on our slow CI -->
+                                <pathConf>${project.build.directory}/elasticsearch-maven-plugin/5.0/configuration/</pathConf>
+                                <pathInitScript>${project.build.directory}/elasticsearch-maven-plugin/5.0/init/init.script</pathInitScript>
+                                <autoCreateIndex>false</autoCreateIndex>
+                            </configuration>
+                            <!-- Different executions from 2.x: the "start" goal has been renamed in version 5  -->
+                            <executions>
+                                <execution >
+                                    <id>start-elasticsearch</id>
+                                    <phase>pre-integration-test</phase>
+                                    <goals>
+                                        <goal>runforked</goal>
+                                    </goals>
+                                </execution>
+                                <execution>
+                                    <id>stop-elasticsearch</id>
+                                    <phase>post-integration-test</phase>
+                                    <goals>
+                                        <goal>stop</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+
+        <!-- Elasticsearch 5.2+ test environment (default) -->
+        <profile>
+            <id>elasticsearch-5.2</id>
+            <activation>
+                <!-- Activate by default, i.e. if test.elasticsearch.host.version has not been defined explicitly -->
+                <property>
+                    <name>!test.elasticsearch.host.version</name>
+                </property>
+            </activation>
+            <properties>
+                <test.elasticsearch.mavenPlugin.version>5.7</test.elasticsearch.mavenPlugin.version>
+                <test.elasticsearch.host.version>5.6.7</test.elasticsearch.host.version>
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>com.github.alexcojocaru</groupId>
+                            <artifactId>elasticsearch-maven-plugin</artifactId>
+                            <version>${test.elasticsearch.mavenPlugin.version}</version>
+                            <configuration>
+                                <skip>${test.elasticsearch.host.provided}</skip>
+                                <version>${test.elasticsearch.host.version}</version>
+                                <timeout>90</timeout><!-- Make it work on our slow CI -->
+                                <pathConf>${project.build.directory}/elasticsearch-maven-plugin/5.0/configuration/</pathConf>
+                                <pathInitScript>${project.build.directory}/elasticsearch-maven-plugin/5.0/init/init.script</pathInitScript>
+                                <autoCreateIndex>false</autoCreateIndex>
+                            </configuration>
+                            <!-- Different executions from 2.x: the "start" goal has been renamed in version 5  -->
+                            <executions>
+                                <execution >
+                                    <id>start-elasticsearch</id>
+                                    <phase>pre-integration-test</phase>
+                                    <goals>
+                                        <goal>runforked</goal>
+                                    </goals>
+                                </execution>
+                                <execution>
+                                    <id>stop-elasticsearch</id>
+                                    <phase>post-integration-test</phase>
+                                    <goals>
+                                        <goal>stop</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+
+        <!-- =============================== -->
+        <!-- Database profiles               -->
+        <!-- =============================== -->
+        <!-- H2 is the default -->
+        <profile>
+            <id>h2</id>
+            <activation>
+                <property>
+                    <name>inMemoryTests</name>
+                    <value>!true</value>
+                </property>
+            </activation>
+            <properties>
+                <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
+                <jdbc.driver.groupId>com.h2database</jdbc.driver.groupId>
+                <jdbc.driver.artifactId>h2</jdbc.driver.artifactId>
+                <jdbc.driver.version>${version.com.h2database}</jdbc.driver.version>
+                <jdbc.driver>org.h2.Driver</jdbc.driver>
+                <jdbc.url>jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1</jdbc.url>
+                <jdbc.user>sa</jdbc.user>
+                <jdbc.pass>sa</jdbc.pass>
+                <jdbc.isolation />
+            </properties>
+        </profile>
+    </profiles>
+</project>

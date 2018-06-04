@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ~ Hibernate Search, full-text search for your domain model
+ ~
+ ~ License: GNU Lesser General Public License (LGPL), version 2.1 or later
+ ~ See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
+  -->
+<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.0">
+
+    <concept id="my-rules:ApiTypes">
+        <description>
+            Contributes the :Api and :Public labels to API types
+        </description>
+        <cypher><![CDATA[
+            MATCH
+                (type:Type)
+            WHERE
+                NOT (type.fqn =~ ".*\\.impl\\..*")
+                AND NOT (type.fqn =~ ".*\\.spi\\..*")
+            SET
+                type:Api, type:Public
+            RETURN
+                type
+        ]]></cypher>
+    </concept>
+
+    <concept id="my-rules:SpiTypes">
+        <description>
+            Contributes the :Spi and :Public labels to SPI types
+        </description>
+        <cypher><![CDATA[
+            MATCH
+                (type:Type)
+            WHERE
+                type.fqn =~ ".*\\.spi\\..*"
+            SET
+                type:Spi, type:Public
+            RETURN
+                type
+        ]]></cypher>
+    </concept>
+
+    <concept id="my-rules:ImplTypes">
+        <description>
+            Contributes the :Impl label to implementation types
+        </description>
+        <cypher><![CDATA[
+            MATCH
+                (type:Type)
+            WHERE
+                type.fqn =~ ".*\\.impl\\..*"
+            SET
+                type:Impl
+            RETURN
+                type
+        ]]></cypher>
+    </concept>
+
+    <concept id="my-rules:NonTestArtifacts">
+        <description>
+            Contributes the :NonTest label to :Maven:Artifact nodes that are not supposed to contain any test type.
+        </description>
+        <cypher><![CDATA[
+            MATCH
+                (artifact:Maven:Artifact)
+            WHERE
+               NOT artifact.type = "test-jar"
+               AND NOT artifact.name =~ "hibernate-search-integrationtest-.*"
+            SET
+                artifact:NonTest
+            RETURN
+                artifact
+        ]]></cypher>
+    </concept>
+
+    <concept id="my-rules:PublicArtifacts">
+        <description>
+            Contributes the :Public label to :Maven:Artifact nodes that may be publicly exposed.
+        </description>
+        <cypher><![CDATA[
+            MATCH
+                (artifact:Maven:Artifact)
+            WHERE
+                NOT (
+                   artifact.name =~ "hibernate-search-.*"
+                   AND (
+                       artifact.type = "test-jar"
+                       OR artifact.name =~ ".*-integrationtest-.*"
+                       OR artifact.name =~ ".*-internal-.*"
+                   )
+                )
+            SET
+                artifact:Public
+            RETURN
+                artifact
+        ]]></cypher>
+    </concept>
+
+    <constraint id="my-rules:PublicTypesMayNotExtendInternalTypes">
+        <requiresConcept refId="my-rules:ApiTypes" />
+        <requiresConcept refId="my-rules:SpiTypes" />
+        <requiresConcept refId="my-rules:ImplTypes" />
+        <description>API/SPI types must not extend/implement internal types.</description>
+        <cypher><![CDATA[
+            MATCH
+                (type:Type:Public)-[:EXTENDS|:IMPLEMENTS]->(supertype:Type:Impl)
+            RETURN
+                type
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="my-rules:PublicMethodsMayNotExposeInternalTypes">
+        <requiresConcept refId="my-rules:ApiTypes" />
+        <requiresConcept refId="my-rules:SpiTypes" />
+        <requiresConcept refId="my-rules:ImplTypes" />
+        <description>API/SPI methods must not expose internal types.</description>
+        <cypher><![CDATA[
+            // return values
+            MATCH
+                (type:Type:Public)-[:DECLARES]->(method)-[:RETURNS]->(returntype:Type:Impl)
+            WHERE
+                (method.visibility="public" OR method.visibility="protected")
+            RETURN
+                method
+
+            // parameters
+            UNION ALL
+            MATCH
+                (type:Type:Public)-[:DECLARES]->(method)-[:HAS]->(parameter)-[:OF_TYPE]->(parametertype:Type:Impl)
+            WHERE
+                (method.visibility="public" OR method.visibility="protected")
+            RETURN
+                method
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="my-rules:PublicFieldsMayNotExposeInternalTypes">
+        <requiresConcept refId="my-rules:ApiTypes" />
+        <requiresConcept refId="my-rules:SpiTypes" />
+        <requiresConcept refId="my-rules:ImplTypes" />
+        <description>API/SPI fields must not expose internal types.</description>
+        <cypher><![CDATA[
+            MATCH
+                (type:Type:Public)-[:DECLARES]->(field)-[:OF_TYPE]->(fieldtype:Type:Impl)
+            WHERE
+                (field.visibility="public" OR field.visibility="protected")
+            RETURN
+                field
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="my-rules:APITypesMayNotExtendSPITypes" severity="minor">
+        <requiresConcept refId="my-rules:ApiTypes" />
+        <requiresConcept refId="my-rules:SpiTypes" />
+        <description>API types must not extend/implement SPI types.</description>
+        <cypher><![CDATA[
+            MATCH
+                (type:Type:Api)-[:EXTENDS|:IMPLEMENTS]->(supertype:Type:Spi)
+            RETURN
+                type
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="my-rules:APIMethodsMayNotExposeSPITypes" severity="minor">
+        <requiresConcept refId="my-rules:ApiTypes" />
+        <requiresConcept refId="my-rules:SpiTypes" />
+        <description>API methods must not expose SPI types.</description>
+        <cypher><![CDATA[
+            // return values
+            MATCH
+                (type:Type:Api)-[:DECLARES]->(method)-[:RETURNS]->(returntype:Type:Spi)
+            WHERE
+                (method.visibility="public" OR method.visibility="protected")
+            RETURN
+                method
+
+            // parameters
+            UNION ALL
+            MATCH
+                (type:Type:Api)-[:DECLARES]->(method)-[:HAS]->(parameter)-[:OF_TYPE]->(parametertype:Type:Spi)
+            WHERE
+                (method.visibility="public" OR method.visibility="protected")
+            RETURN
+                method
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="my-rules:APIFieldsMayNotExposeSPITypes" severity="minor">
+        <requiresConcept refId="my-rules:ApiTypes" />
+        <requiresConcept refId="my-rules:SpiTypes" />
+        <description>API fields must not expose SPI types.</description>
+        <cypher><![CDATA[
+            MATCH
+                (type:Type:Api)-[:DECLARES]->(field)-[:OF_TYPE]->(fieldtype:Type:Spi)
+            WHERE
+                (field.visibility="public" OR field.visibility="protected")
+            RETURN
+                field
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="my-rules:TypesMayNotDependOnImplementationTypeFromOtherModules">
+        <requiresConcept refId="my-rules:NonTestArtifacts" />
+        <requiresConcept refId="my-rules:PublicArtifacts" />
+        <requiresConcept refId="my-rules:ImplTypes" />
+        <description>
+            Types must not depend on implementation types from other modules.
+            SPIs must be used for such dependencies.
+            Exceptions are allowed only when the dependency type is in a non-public module,
+            or the depending type is in a test module.
+        </description>
+        <cypher><![CDATA[
+            MATCH (artifact1:Maven:Artifact:NonTest)-[:CONTAINS]->(type1:Type)
+                -[:DEPENDS_ON]->
+                (type2:Type:Impl)<-[:CONTAINS]-(artifact2:Maven:Artifact:Public)
+            WHERE
+                artifact1 <> artifact2
+            RETURN
+                artifact1, type1, artifact2, type2
+        ]]></cypher>
+    </constraint>
+
+    <group id="default">
+        <includeConstraint refId="my-rules:PublicTypesMayNotExtendInternalTypes" />
+        <includeConstraint refId="my-rules:PublicMethodsMayNotExposeInternalTypes" />
+        <includeConstraint refId="my-rules:PublicFieldsMayNotExposeInternalTypes" />
+        <includeConstraint refId="my-rules:APITypesMayNotExtendSPITypes" />
+        <includeConstraint refId="my-rules:APIMethodsMayNotExposeSPITypes" />
+        <includeConstraint refId="my-rules:APIFieldsMayNotExposeSPITypes" />
+        <includeConstraint refId="my-rules:TypesMayNotDependOnImplementationTypeFromOtherModules" />
+    </group>
+
+</jqa:jqassistant-rules>
