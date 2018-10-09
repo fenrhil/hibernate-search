@@ -228,6 +228,7 @@ stage('Configure') {
 							+ helper.generateUpstreamTriggers()
 			),
 			helper.generateNotificationProperty(),
+			[$class: 'JobPropertyImpl', throttle: [count: 1, durationName: 'day', userBoost: true]],
 			parameters([
 					choice(
 							name: 'ENVIRONMENT_SET',
