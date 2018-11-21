@@ -11,7 +11,7 @@ import org.jenkinsci.plugins.credentialsbinding.impl.CredentialNotFoundException
 /*
  * See https://github.com/hibernate/hibernate-jenkins-pipeline-helpers
  */
-@Library('hibernate-jenkins-pipeline-helpers@1.2')
+@Library('hibernate-jenkins-pipeline-helpers@staging')
 import org.hibernate.jenkins.pipeline.helpers.job.JobHelper
 import org.hibernate.jenkins.pipeline.helpers.alternative.AlternativeMultiMap
 import org.hibernate.jenkins.pipeline.helpers.version.Version
@@ -279,7 +279,7 @@ ALL_ENV""",
 			} else {
 				echo "Enabling only the default build and integration tests in the default environment for feature branch $helper.scmSource.branch.name"
 				enableDefaultBuild = true
-				enableDefaultEnvIT = true
+				enableDefaultEnvIT = false
 			}
 			break
 		default:
@@ -288,8 +288,8 @@ ALL_ENV""",
 			)
 	}
 
-	enableDefaultBuild =
-			enableDefaultEnvIT || enableNonDefaultSupportedEnvIT || enableExperimentalEnvIT || deploySnapshot
+	enableDefaultBuild = true
+			//enableDefaultEnvIT || enableNonDefaultSupportedEnvIT || enableExperimentalEnvIT || deploySnapshot
 
 	echo """Branch: ${helper.scmSource.branch.name}, PR: ${helper.scmSource.pullRequest?.id}, integration test setting: $params.INTEGRATION_TESTS, resulting execution plan:
 enableDefaultBuild=$enableDefaultBuild
