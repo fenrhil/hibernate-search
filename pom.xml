@@ -1661,6 +1661,30 @@
         </pluginManagement>
     </build>
 
+    <repositories>
+        <!--
+            Enable the JBoss Snapshots repository, for Hibernate ORM.
+         -->
+        <repository>
+            <id>${jboss.public.repo.id}</id>
+            <name>JBoss Public Maven Repository Group</name>
+            <url>${jboss.public.repo.url}</url>
+            <layout>default</layout>
+            <releases>
+                <!--
+                     Must be enabled in order for Versions Maven Plugin to work correctly...
+                     Probably related to https://github.com/mojohaus/versions-maven-plugin/issues/192
+                 -->
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <distributionManagement>
         <repository>
             <id>${jboss.releases.repo.id}</id>
