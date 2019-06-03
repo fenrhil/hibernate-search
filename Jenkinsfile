@@ -408,6 +408,7 @@ stage('Default build') {
 	}
 	runBuildOnNode {
 		helper.withMavenWorkspace(mavenSettingsConfig: deploySnapshot ? helper.configuration.file.deployment.maven.settingsId : null) {
+			upgradeToLatestOrmSnapshot()
 			sh """ \
 					mvn clean \
 					${deploySnapshot ? "\
@@ -836,6 +837,8 @@ void mavenNonDefaultBuild(BuildEnvironment buildEnv, String args, String project
 		}
 	}
 
+	upgradeToLatestOrmSnapshot()
+
 	// Add a suffix to tests to distinguish between different executions
 	// of the same test in different environments in reports
 	def testSuffix = buildEnv.tag.replaceAll('[^a-zA-Z0-9_\\-+]+', '_')
@@ -898,3 +901,19 @@ String toElasticsearchJdkArg(BuildEnvironment buildEnv) {
 	def elasticsearchJdkToolPath = tool(name: elasticsearchJdkTool, type: 'jdk')
 	return "-Dtest.elasticsearch.run.java_home=$elasticsearchJdkToolPath"
 }
+
+void upgradeToLatestOrmSnapshot() {
+	// Despite the fact we forbid minor version upgrades, the versions plugin keeps taking 5.5 into account.
+	// Using a newVersion range does't fix the problem.
+	// So we have to use version rules to forbid 5.5 explicitly.
+	sh """
+			mvn org.codehaus.mojo:versions-maven-plugin:2.7:update-properties \
+			-DallowMajorUpdates=false \
+			-DallowMinorUpdates=false \
+			-DallowSnapshots=true \
+			-DincludeProperties='version.org.hibernate' \
+			-Dmaven.version.rules="file://\$(pwd)/maven-version-plugin-rules.xml" \
+	"""
+	sh "echo 'Updated versions:' && git diff HEAD"
+}
+
