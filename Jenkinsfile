@@ -350,6 +350,7 @@ stage('Default build') {
 	}
 	node(NODE_PATTERN_BASE) {
 		helper.withMavenWorkspace {
+			upgradeToLatestOrmSnapshot()
 			sh """ \
 					mvn clean install \
 					-Pdist -Pcoverage -Pjqassistant \
@@ -664,6 +665,8 @@ void mavenNonDefaultBuild(BuildEnvironment buildEnv, String args) {
 		}
 	}
 
+	upgradeToLatestOrmSnapshot()
+
 	// Add a suffix to tests to distinguish between different executions
 	// of the same test in different environments in reports
 	def testSuffix = buildEnv.tag.replaceAll('[^a-zA-Z0-9_\\-+]+', '_')
@@ -681,4 +684,19 @@ String toMavenElasticsearchProfileArg(String mavenEsProfile) {
 		// and Maven would end up disabling it.
 		''
 	}
+}
+
+void upgradeToLatestOrmSnapshot() {
+	// Despite the fact we forbid minor version upgrades, the versions plugin keeps taking 5.4 into account.
+	// Using a newVersion range does't fix the problem.
+	// So we have to use version rules to forbid 5.4 explicitly.
+	sh """
+			mvn org.codehaus.mojo:versions-maven-plugin:2.7:update-properties \
+			-DallowMajorUpdates=false \
+			-DallowMinorUpdates=false \
+			-DallowSnapshots=true \
+			-DincludeProperties='version.org.hibernate' \
+			-Dmaven.version.rules="file://\$(pwd)/maven-version-plugin-rules.xml" \
+	"""
+	sh "echo 'Updated versions:' && git diff HEAD"
 }
