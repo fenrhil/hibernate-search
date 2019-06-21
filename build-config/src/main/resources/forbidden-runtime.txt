@@ -50,8 +50,8 @@ java.time.ZonedDateTime#parse(java.lang.CharSequence, java.time.format.DateTimeF
 
 ################################################################################################################
 @defaultMessage Avoid to use Hibernate ORM internals
-org.hibernate.internal.**
-org.hibernate.**.internal.**
+#org.hibernate.internal.**
+#org.hibernate.**.internal.**
 
 ################################################################################################################
 @defaultMessage MethodHandles do not work on GraalVM. Make sure to expose configuration options so that integrators can force the use of java.reflect instead. Once it's done, add your class to the forbiddenApis whitelist.
