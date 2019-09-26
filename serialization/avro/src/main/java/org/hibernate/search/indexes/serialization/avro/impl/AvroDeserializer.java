@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.avro.Protocol;
+import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.Decoder;
@@ -54,7 +55,10 @@ public class AvroDeserializer implements Deserializer {
 		final Protocol protocol = protocols.getProtocol( majorVersion, minorVersion );
 
 		Decoder decoder = DecoderFactory.get().binaryDecoder( inputStream, null );
-		GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>( protocol.getType( "Message" ) );
+		Schema msgSchema = protocol.getType( "Message" );
+		GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>(
+				msgSchema, msgSchema, HibernateSearchData.get()
+		);
 		GenericRecord result;
 		try {
 			result = reader.read( null, decoder );

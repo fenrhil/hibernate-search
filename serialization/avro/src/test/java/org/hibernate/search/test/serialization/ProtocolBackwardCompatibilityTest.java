@@ -84,6 +84,7 @@ public class ProtocolBackwardCompatibilityTest {
 		List<LuceneWork> workList = buildV10Works();
 		workList.addAll( buildV11Works() );
 		workList.addAll( buildV12Works() );
+		workList.addAll( buildV13Works() );
 		serializeWithAvro( workList );
 	}
 
@@ -232,6 +233,23 @@ public class ProtocolBackwardCompatibilityTest {
 		document.add( new BinaryDocValuesField( "foo", new BytesRef( "world" ) ) );
 		document.add( new SortedSetDocValuesField( "foo", new BytesRef( "hello" ) ) );
 		document.add( new SortedDocValuesField( "foo", new BytesRef( "world" ) ) );
+		works.add( new AddLuceneWork( 123, "123", remoteTypeId, document ) );
+		return works;
+	}
+
+	private List<LuceneWork> buildV13Works() throws Exception {
+		// Nothing new, just an upgrade to Avro 1.9 and logical types for enums,
+		// which shouldn't change anything to the serialized works.
+		List<LuceneWork> works = new ArrayList<>();
+		Document document = new Document();
+		document.add( new Field(
+				"StringF",
+				"String field",
+				Field.Store.YES,
+				Field.Index.ANALYZED,
+				Field.TermVector.WITH_OFFSETS
+		) );
+		document.add( new BinaryDocValuesField( "foo", new BytesRef( "world" ) ) );
 		works.add( new AddLuceneWork( 123, "123", remoteTypeId, document ) );
 		return works;
 	}

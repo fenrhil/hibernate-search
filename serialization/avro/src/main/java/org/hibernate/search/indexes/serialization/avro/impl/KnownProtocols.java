@@ -6,6 +6,7 @@
  */
 package org.hibernate.search.indexes.serialization.avro.impl;
 
+import org.apache.avro.LogicalTypes;
 import org.apache.avro.Protocol;
 import org.hibernate.search.indexes.serialization.avro.logging.impl.Log;
 import org.hibernate.search.util.logging.impl.LoggerFactory;
@@ -29,12 +30,19 @@ public final class KnownProtocols {
 	 * Latest protocol version is 1.2
 	 */
 	public static final int MAJOR_VERSION = 1;
-	public static final int LATEST_MINOR_VERSION = 2;
+	public static final int LATEST_MINOR_VERSION = 3;
 
 	private static final Log log = LoggerFactory.make( Log.class, MethodHandles.lookup() );
+
+	static {
+		// Make sure logical types are registered
+		HibernateSearchData.get();
+	}
+
 	private volatile Protocol v1_0 = null;
 	private volatile Protocol v1_1 = null;
 	private volatile Protocol v1_2 = null;
+	private volatile Protocol v1_3 = null;
 	private volatile boolean warned = false;
 
 	Protocol getProtocol(int majorVersion, int minorVersion) {
@@ -46,7 +54,10 @@ public final class KnownProtocols {
 					LATEST_MINOR_VERSION
 			);
 		}
-		if ( minorVersion == 2 ) {
+		if ( minorVersion == 3 ) {
+			return getV1_3();
+		}
+		else if ( minorVersion == 2 ) {
 			return getV1_2();
 		}
 		else if ( minorVersion == 1 ) {
@@ -60,7 +71,7 @@ public final class KnownProtocols {
 				warned = true;
 				log.unexpectedMinorProtocolVersion( majorVersion, minorVersion, LATEST_MINOR_VERSION );
 			}
-			return getV1_2();
+			return getV1_3();
 		}
 	}
 
@@ -108,6 +119,21 @@ public final class KnownProtocols {
 				}
 				p = new ProtocolBuilderV1_2().build();
 				v1_2 = p;
+			}
+		}
+		return p;
+	}
+
+	private Protocol getV1_3() {
+		Protocol p = v1_3;
+		if ( p == null ) {
+			synchronized (this) {
+				p = v1_3;
+				if ( p != null ) {
+					return p;
+				}
+				p = new ProtocolBuilderV1_3().build();
+				v1_3 = p;
 			}
 		}
 		return p;

@@ -40,6 +40,6 @@ public class SerializationProviderTest {
 	@Test
 	public void testCorrectSerializationProviderVersion() {
 		assertTrue( "Unexpected serialization protocol version - " + serializationProvider.toString(),
-				serializationProvider.toString().contains( "v1.2" ) );
+				serializationProvider.toString().contains( "v1.3" ) );
 	}
 }

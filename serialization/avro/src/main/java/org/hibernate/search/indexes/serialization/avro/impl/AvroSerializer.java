@@ -185,7 +185,7 @@ public class AvroSerializer implements Serializer {
 		out.write( KnownProtocols.MAJOR_VERSION );
 		out.write( KnownProtocols.LATEST_MINOR_VERSION );
 		Schema msgSchema = protocol.getType( "Message" );
-		GenericDatumWriter<GenericRecord> writer = new GenericDatumWriter<>( msgSchema );
+		GenericDatumWriter<GenericRecord> writer = new GenericDatumWriter<>( msgSchema, HibernateSearchData.get() );
 		BinaryEncoder encoder = EncoderFactory.get().directBinaryEncoder( out, null );
 		GenericRecord message = new GenericData.Record( msgSchema );
 		message.put( "classReferences", classReferences );

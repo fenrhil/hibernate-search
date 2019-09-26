@@ -1,0 +1,10 @@
+{
+    "name": "Index",
+    "type": "enum",
+    "symbols" : ["NO",
+                "ANALYZED",
+                "NOT_ANALYZED",
+                "NOT_ANALYZED_NO_NORMS",
+                "ANALYZED_NO_NORMS"],
+    "logicalType": "HSEARCH_SerializableIndex"
+}

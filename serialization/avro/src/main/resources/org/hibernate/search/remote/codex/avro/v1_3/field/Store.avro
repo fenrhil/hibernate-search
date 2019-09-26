@@ -1,0 +1,6 @@
+{
+    "name": "Store",
+    "type": "enum",
+    "symbols" : ["YES", "NO"],
+    "logicalType": "HSEARCH_SerializableStore"
+}
