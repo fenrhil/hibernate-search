@@ -128,6 +128,21 @@ public class ProtocolBackwardCompatibilityTest {
 		SerializationTestHelper.assertLuceneWorkList( expectedWorkList, actualWorkList );
 	}
 
+	@Test
+	public void testDeserializingVersion12ModelWithLatestDeserializer() throws Exception {
+		// expected
+		List<LuceneWork> expectedWorkList = buildV10Works();
+		expectedWorkList.addAll( buildV11Works() );
+		expectedWorkList.addAll( buildV12Works() );
+
+		byte[] serializedModelV12 = loadSerializedWorkForMajorMinor( 1, 2 );
+
+		// actual
+		List<LuceneWork> actualWorkList = luceneWorkSerializer.toLuceneWorks( serializedModelV12 );
+
+		SerializationTestHelper.assertLuceneWorkList( expectedWorkList, actualWorkList );
+	}
+
 	private List<LuceneWork> buildV10Works() throws Exception {
 		List<LuceneWork> works = new ArrayList<>();
 		works.add( OptimizeLuceneWork.INSTANCE );
