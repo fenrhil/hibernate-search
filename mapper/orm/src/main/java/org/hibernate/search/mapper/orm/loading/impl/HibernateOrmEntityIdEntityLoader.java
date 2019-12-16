@@ -6,7 +6,6 @@
  */
 package org.hibernate.search.mapper.orm.loading.impl;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,7 +87,7 @@ class HibernateOrmEntityIdEntityLoader<E> extends AbstractHibernateOrmEntityLoad
 	private EntityKey[] toEntityKeys(List<?> ids) {
 		EntityKey[] entityKeys = new EntityKey[ids.size()];
 		for ( int i = 0; i < ids.size(); i++ ) {
-			Serializable id = (Serializable) ids.get( i );
+			Object id = ids.get( i );
 			EntityKey entityKey = sessionContext.session().generateEntityKey( id, entityPersister );
 			entityKeys[i] = ( entityKey );
 		}
