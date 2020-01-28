@@ -365,7 +365,7 @@ stage('Default build') {
 		helper.withMavenWorkspace {
 			upgradeToLatestOrmSnapshot()
 			sh """ \
-					mvn clean install \
+					mvn clean install -U \
 					-Pdist -Pcoverage -Pjqassistant \
 					${enableDefaultBuildIT ? '' : '-DskipITs'} \
 			"""
@@ -721,7 +721,7 @@ void mavenNonDefaultBuild(BuildEnvironment buildEnv, String args) {
 	// Add a suffix to tests to distinguish between different executions
 	// of the same test in different environments in reports
 	def testSuffix = buildEnv.tag.replaceAll('[^a-zA-Z0-9_\\-+]+', '_')
-	sh "mvn -Dsurefire.environment=$testSuffix $args"
+	sh "mvn -U -Dsurefire.environment=$testSuffix $args"
 }
 
 String toMavenElasticsearchProfileArg(String mavenEsProfile) {
