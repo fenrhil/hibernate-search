@@ -416,7 +416,7 @@ stage('Default build') {
 							deploy \
 					" : "\
 							install \
-					"} \
+					"} -U \
 					-Pdist -Pcoverage -Pjqassistant \
 					${enableDefaultBuildIT ? '' : '-DskipITs'} \
 					${enableDefaultBuildLegacyIT ? '-Dlegacy.skip=false' : ''} \
@@ -846,7 +846,7 @@ void mavenNonDefaultBuild(BuildEnvironment buildEnv, String args, String project
 
 	dir(projectPath) {
 		sh """ \
-				mvn -Dsurefire.environment=$testSuffix \
+				mvn -U -Dsurefire.environment=$testSuffix \
 						${toTestJdkArg(buildEnv)} \
 						${toElasticsearchJdkArg(buildEnv)} \
 						$args \
