@@ -7,6 +7,7 @@
 package org.hibernate.search.engine.cfg.impl;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -26,6 +27,18 @@ final class OptionalPropertyContextImpl<T> implements OptionalPropertyContext<T>
 	OptionalPropertyContextImpl(String key, Function<Object, T> converter) {
 		this.key = key;
 		this.converter = converter;
+	}
+
+	@Override
+	public OptionalPropertyContext<T> withValidator(Consumer<T> validator) {
+		return new OptionalPropertyContextImpl<>(
+				key,
+				v -> {
+					T converted = converter.apply( v );
+					validator.accept( converted );
+					return converted;
+				}
+		);
 	}
 
 	@Override

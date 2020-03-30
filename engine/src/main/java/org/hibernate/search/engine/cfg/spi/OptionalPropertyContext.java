@@ -7,9 +7,12 @@
 package org.hibernate.search.engine.cfg.spi;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public interface OptionalPropertyContext<T> {
+
+	OptionalPropertyContext<T> withValidator(Consumer<T> validator);
 
 	OptionalPropertyContext<List<T>> multivalued();
 

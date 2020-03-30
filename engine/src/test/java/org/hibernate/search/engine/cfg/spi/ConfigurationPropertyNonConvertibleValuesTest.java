@@ -26,7 +26,7 @@ import org.easymock.EasyMockSupport;
 
 @RunWith(Parameterized.class)
 @SuppressWarnings({"unchecked", "rawtypes"}) // Raw types are the only way to mock parameterized types with EasyMock
-public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSupport {
+public class ConfigurationPropertyNonConvertibleValuesTest<T> extends EasyMockSupport {
 
 	@Parameterized.Parameters(name = "{2}")
 	public static Object[][] data() {
@@ -48,42 +48,42 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 				),
 				params(
 						c -> c.as( MyPropertyType.class, MyPropertyType::new ),
-						MyPropertyType.INVALID_VALUE, new MyPropertyType( "foobar" ),
+						MyPropertyType.INVALID_STRING_VALUE, new MyPropertyType( "foobar" ),
 						"Invalid value: expected either an instance of '" + MyPropertyType.class.getName()
 								+ "' or a String that can be parsed.",
-						MyPropertyType.INVALID_VALUE_ERROR_MESSAGE
+						MyPropertyType.INVALID_STRING_VALUE_ERROR_MESSAGE
 				)
 		};
 	}
 
 	private static <T> Object[] params(Function<KeyContext, OptionalPropertyContext<T>> testedMethod,
 			String invalidStringValue, T validValue,
-			String expectedInvalidValueCommonMessagePrefix,
-			String expectedInvalidStringMessage) {
+			String expectedConversionErrorCommonMessagePrefix,
+			String expectedConversionErrorFromStringMessage) {
 		return new Object[] {
 				testedMethod, invalidStringValue, validValue,
-				expectedInvalidValueCommonMessagePrefix,
-				expectedInvalidStringMessage
+				expectedConversionErrorCommonMessagePrefix,
+				expectedConversionErrorFromStringMessage
 		};
 	}
 
 	private final Function<KeyContext, OptionalPropertyContext<T>> testedMethod;
 	private final String invalidStringValue;
 	private final T validValue;
-	private final String expectedInvalidValueCommonMessagePrefix;
-	private final String expectedInvalidStringMessage;
+	private final String expectedConversionErrorCommonMessagePrefix;
+	private final String expectedConversionErrorFromStringMessage;
 
 	private final ConfigurationPropertySource sourceMock = createMock( ConfigurationPropertySource.class );
 
-	public ConfigurationPropertyInvalidSimpleValuesTest(Function<KeyContext, OptionalPropertyContext<T>> testedMethod,
+	public ConfigurationPropertyNonConvertibleValuesTest(Function<KeyContext, OptionalPropertyContext<T>> testedMethod,
 			String invalidStringValue, T validValue,
-			String expectedInvalidValueCommonMessagePrefix,
-			String expectedInvalidStringMessage) {
+			String expectedConversionErrorCommonMessagePrefix,
+			String expectedConversionErrorFromStringMessage) {
 		this.testedMethod = testedMethod;
 		this.invalidStringValue = invalidStringValue;
 		this.validValue = validValue;
-		this.expectedInvalidValueCommonMessagePrefix = expectedInvalidValueCommonMessagePrefix;
-		this.expectedInvalidStringMessage = expectedInvalidStringMessage;
+		this.expectedConversionErrorCommonMessagePrefix = expectedConversionErrorCommonMessagePrefix;
+		this.expectedConversionErrorFromStringMessage = expectedConversionErrorFromStringMessage;
 	}
 
 	@Test
@@ -107,8 +107,8 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 						"Cannot use value '" + invalidStringValue
 								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
-				.hasMessageContaining( expectedInvalidValueCommonMessagePrefix )
-				.hasMessageContaining( expectedInvalidStringMessage );
+				.hasMessageContaining( expectedConversionErrorCommonMessagePrefix )
+				.hasMessageContaining( expectedConversionErrorFromStringMessage );
 		verifyAll();
 
 		InvalidType invalidTypeValue = new InvalidType();
@@ -122,7 +122,7 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 						"Cannot use value '" + invalidTypeValue
 								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
-				.hasMessageContaining( expectedInvalidValueCommonMessagePrefix );
+				.hasMessageContaining( expectedConversionErrorCommonMessagePrefix );
 		verifyAll();
 	}
 
@@ -146,8 +146,8 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 						"Cannot use value '" + invalidStringValue
 								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
-				.hasMessageContaining( expectedInvalidValueCommonMessagePrefix )
-				.hasMessageContaining( expectedInvalidStringMessage );
+				.hasMessageContaining( expectedConversionErrorCommonMessagePrefix )
+				.hasMessageContaining( expectedConversionErrorFromStringMessage );
 		verifyAll();
 
 		InvalidType invalidTypeValue = new InvalidType();
@@ -161,7 +161,7 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 						"Cannot use value '" + invalidTypeValue
 								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
-				.hasMessageContaining( expectedInvalidValueCommonMessagePrefix );
+				.hasMessageContaining( expectedConversionErrorCommonMessagePrefix );
 		verifyAll();
 	}
 
@@ -187,8 +187,8 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 						"Cannot use value '" + invalidStringValue
 								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
-				.hasMessageContaining( expectedInvalidValueCommonMessagePrefix )
-				.hasMessageContaining( expectedInvalidStringMessage );
+				.hasMessageContaining( expectedConversionErrorCommonMessagePrefix )
+				.hasMessageContaining( expectedConversionErrorFromStringMessage );
 		verifyAll();
 
 		// String value - multiple
@@ -203,8 +203,8 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 						"Cannot use value '" + commaSeparatedStringValue
 								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
-				.hasMessageContaining( expectedInvalidValueCommonMessagePrefix )
-				.hasMessageContaining( expectedInvalidStringMessage );
+				.hasMessageContaining( expectedConversionErrorCommonMessagePrefix )
+				.hasMessageContaining( expectedConversionErrorFromStringMessage );
 		verifyAll();
 
 		// Invalid type value in collection
@@ -219,7 +219,7 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 						"Cannot use value '" + invalidTypeValueCollection
 								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
-				.hasMessageContaining( expectedInvalidValueCommonMessagePrefix );
+				.hasMessageContaining( expectedConversionErrorCommonMessagePrefix );
 		verifyAll();
 
 		// Invalid type value instead of collection
@@ -255,14 +255,14 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 	}
 
 	private static class MyPropertyType {
-		private static final String INVALID_VALUE = "invalid";
-		private static final String INVALID_VALUE_ERROR_MESSAGE = "Value '" + INVALID_VALUE + "' is forbidden";
+		private static final String INVALID_STRING_VALUE = "invalid";
+		private static final String INVALID_STRING_VALUE_ERROR_MESSAGE = "Value '" + INVALID_STRING_VALUE + "' is forbidden";
 
 		private final String value;
 
 		private MyPropertyType(String value) {
-			if ( INVALID_VALUE.equals( value ) ) {
-				throw new IllegalArgumentException( INVALID_VALUE_ERROR_MESSAGE );
+			if ( INVALID_STRING_VALUE.equals( value ) ) {
+				throw new IllegalArgumentException( INVALID_STRING_VALUE_ERROR_MESSAGE );
 			}
 			this.value = value;
 		}
