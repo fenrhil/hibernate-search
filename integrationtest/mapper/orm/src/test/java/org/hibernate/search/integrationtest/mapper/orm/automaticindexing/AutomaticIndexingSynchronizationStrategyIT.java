@@ -451,9 +451,8 @@ public class AutomaticIndexingSynchronizationStrategyIT {
 				.assertThrown()
 				.isInstanceOf( SearchException.class )
 				.hasMessageContainingAll(
-						"Unable to convert configuration property '"
-								+ HibernateOrmMapperSettings.AUTOMATIC_INDEXING_SYNCHRONIZATION_STRATEGY + "'",
-						"with value 'invalidName'",
+						"Cannot use value 'invalidName' assigned to configuration property '"
+								+ HibernateOrmMapperSettings.AUTOMATIC_INDEXING_SYNCHRONIZATION_STRATEGY + "':",
 						"Unable to find " + AutomaticIndexingSynchronizationStrategy.class.getName()
 								+ " implementation class: invalidName"
 				);

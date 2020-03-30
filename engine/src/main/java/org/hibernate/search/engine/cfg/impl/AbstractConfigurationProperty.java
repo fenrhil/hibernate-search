@@ -58,7 +58,7 @@ abstract class AbstractConfigurationProperty<T> implements ConfigurationProperty
 				e.addSuppressed( e2 );
 			}
 
-			throw log.unableToConvertConfigurationProperty(
+			throw log.cannotUseValueForConfigurationProperty(
 					displayedKey, rawValue.isPresent() ? rawValue.get() : "", e.getMessage(), e
 			);
 		}

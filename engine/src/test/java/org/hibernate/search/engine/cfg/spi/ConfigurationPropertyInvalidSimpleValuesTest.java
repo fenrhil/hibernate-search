@@ -104,8 +104,8 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 		SubTest.expectException( () -> property.get( sourceMock ) )
 				.assertThrown()
 				.hasMessageContaining(
-						"Unable to convert configuration property '" + resolvedKey
-								+ "' with value '" + invalidStringValue + "':"
+						"Cannot use value '" + invalidStringValue
+								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
 				.hasMessageContaining( expectedInvalidValueCommonMessagePrefix )
 				.hasMessageContaining( expectedInvalidStringMessage );
@@ -119,8 +119,8 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 		SubTest.expectException( () -> property.get( sourceMock ) )
 				.assertThrown()
 				.hasMessageContaining(
-						"Unable to convert configuration property '" + resolvedKey
-								+ "' with value '" + invalidTypeValue + "':"
+						"Cannot use value '" + invalidTypeValue
+								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
 				.hasMessageContaining( expectedInvalidValueCommonMessagePrefix );
 		verifyAll();
@@ -143,8 +143,8 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 		SubTest.expectException( () -> property.get( sourceMock ) )
 				.assertThrown()
 				.hasMessageContaining(
-						"Unable to convert configuration property '" + resolvedKey
-								+ "' with value '" + invalidStringValue + "':"
+						"Cannot use value '" + invalidStringValue
+								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
 				.hasMessageContaining( expectedInvalidValueCommonMessagePrefix )
 				.hasMessageContaining( expectedInvalidStringMessage );
@@ -158,8 +158,8 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 		SubTest.expectException( () -> property.get( sourceMock ) )
 				.assertThrown()
 				.hasMessageContaining(
-						"Unable to convert configuration property '" + resolvedKey
-								+ "' with value '" + invalidTypeValue + "':"
+						"Cannot use value '" + invalidTypeValue
+								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
 				.hasMessageContaining( expectedInvalidValueCommonMessagePrefix );
 		verifyAll();
@@ -184,8 +184,8 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 		SubTest.expectException( () -> property.get( sourceMock ) )
 				.assertThrown()
 				.hasMessageContaining(
-						"Unable to convert configuration property '" + resolvedKey
-								+ "' with value '" + invalidStringValue + "':"
+						"Cannot use value '" + invalidStringValue
+								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
 				.hasMessageContaining( expectedInvalidValueCommonMessagePrefix )
 				.hasMessageContaining( expectedInvalidStringMessage );
@@ -200,8 +200,8 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 		SubTest.expectException( () -> property.get( sourceMock ) )
 				.assertThrown()
 				.hasMessageContaining(
-						"Unable to convert configuration property '" + resolvedKey
-								+ "' with value '" + commaSeparatedStringValue + "':"
+						"Cannot use value '" + commaSeparatedStringValue
+								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
 				.hasMessageContaining( expectedInvalidValueCommonMessagePrefix )
 				.hasMessageContaining( expectedInvalidStringMessage );
@@ -216,8 +216,8 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 		SubTest.expectException( () -> property.get( sourceMock ) )
 				.assertThrown()
 				.hasMessageContaining(
-						"Unable to convert configuration property '" + resolvedKey
-								+ "' with value '" + invalidTypeValueCollection + "':"
+						"Cannot use value '" + invalidTypeValueCollection
+								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
 				.hasMessageContaining( expectedInvalidValueCommonMessagePrefix );
 		verifyAll();
@@ -231,8 +231,8 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 		SubTest.expectException( () -> property.get( sourceMock ) )
 				.assertThrown()
 				.hasMessageContaining(
-						"Unable to convert configuration property '" + resolvedKey
-								+ "' with value '" + invalidTypeValue + "':"
+						"Cannot use value '" + invalidTypeValue
+								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
 				.hasMessageContaining( "Invalid multi value: expected either a Collection or a String" )
 				.hasCauseInstanceOf( SearchException.class );

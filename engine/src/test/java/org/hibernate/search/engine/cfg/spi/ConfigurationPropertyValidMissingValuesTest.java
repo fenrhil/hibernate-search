@@ -180,8 +180,8 @@ public class ConfigurationPropertyValidMissingValuesTest<T> extends EasyMockSupp
 				.assertThrown()
 				.isInstanceOf( SearchException.class )
 				.hasMessageContaining(
-						"Unable to convert configuration property '" + resolvedKey
-								+ "' with value '" + expectedValue + "':"
+						"Cannot use value '" + expectedValue
+								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
 				.hasMessageContaining( simulatedFailure.getMessage() )
 				.hasCause( simulatedFailure );
@@ -263,8 +263,8 @@ public class ConfigurationPropertyValidMissingValuesTest<T> extends EasyMockSupp
 				.assertThrown()
 				.isInstanceOf( SearchException.class )
 				.hasMessageContaining(
-						"Unable to convert configuration property '" + resolvedKey
-								+ "' with value '" + expectedValue + "':"
+						"Cannot use value '" + expectedValue
+								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
 				.hasMessageContaining( simulatedFailure.getMessage() )
 				.hasCause( simulatedFailure );

@@ -263,8 +263,8 @@ public class ConfigurationPropertyBeanReferenceTest extends EasyMockSupport {
 		SubTest.expectException( () -> property.get( sourceMock ) )
 				.assertThrown()
 				.hasMessageContaining(
-						"Unable to convert configuration property '" + resolvedKey
-								+ "' with value '" + invalidTypeValue + "':"
+						"Cannot use value '" + invalidTypeValue
+								+ "' assigned to configuration property '" + resolvedKey + "':"
 				)
 				.hasMessageContaining(
 						"Invalid BeanReference value: expected an instance of '" + StubBean.class.getName()
@@ -298,8 +298,8 @@ public class ConfigurationPropertyBeanReferenceTest extends EasyMockSupport {
 				.assertThrown()
 				.hasCause( simulatedFailure )
 				.hasMessageContaining(
-						"Unable to convert configuration property '" + resolvedKey
-								+ "' with value '" + propertyValue + "':"
+						"Cannot use value '" + propertyValue
+								+ "' assigned to configuration property '" + resolvedKey + "':"
 				);
 		verifyAll();
 	}
@@ -335,8 +335,8 @@ public class ConfigurationPropertyBeanReferenceTest extends EasyMockSupport {
 				.assertThrown()
 				.hasCause( simulatedFailure )
 				.hasMessageContaining(
-						"Unable to convert configuration property '" + resolvedKey
-								+ "' with value '" + propertyValue + "':"
+						"Cannot use value '" + propertyValue
+								+ "' assigned to configuration property '" + resolvedKey + "':"
 				);
 		verifyAll();
 	}

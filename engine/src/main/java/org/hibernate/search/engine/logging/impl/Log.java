@@ -76,8 +76,8 @@ public interface Log extends BasicLogger {
 	int ID_OFFSET_2 = MessageConstants.ENGINE_ID_RANGE_MIN + 500;
 
 	@Message(id = ID_OFFSET_2 + 1,
-			value = "Unable to convert configuration property '%1$s' with value '%2$s': %3$s")
-	SearchException unableToConvertConfigurationProperty(String key, Object rawValue, String errorMessage, @Cause Exception cause);
+			value = "Cannot use value '%2$s' assigned to configuration property '%1$s': %3$s")
+	SearchException cannotUseValueForConfigurationProperty(String key, Object rawValue, String errorMessage, @Cause Exception cause);
 
 	@Message(id = ID_OFFSET_2 + 2,
 			value = "Invalid value: expected either an instance of '%1$s' or a String that can be parsed. %2$s")

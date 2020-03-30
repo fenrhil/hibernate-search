@@ -42,8 +42,8 @@ public class ElasticsearchIndexLifecycleStrategyIT {
 				.assertThrown()
 				.isInstanceOf( SearchException.class )
 				.hasMessageContainingAll(
-						"Unable to convert configuration property 'hibernate.search.backends.testedBackend.indexes." + INDEX_NAME
-								+ ".lifecycle.strategy' with value 'update'",
+						"Cannot use value '" + "update"
+								+ "' assigned to configuration property 'hibernate.search.backends.testedBackend.indexes." + INDEX_NAME + "':",
 						"The lifecycle strategy cannot be set at the index level anymore",
 						"Set the schema management strategy via the property 'hibernate.search.schema_management.strategy' instead"
 				);
