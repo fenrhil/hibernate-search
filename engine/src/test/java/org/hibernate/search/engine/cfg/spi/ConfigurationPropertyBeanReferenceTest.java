@@ -10,9 +10,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import org.hibernate.search.engine.environment.bean.BeanHolder;
 import org.hibernate.search.engine.environment.bean.BeanReference;
@@ -344,7 +344,7 @@ public class ConfigurationPropertyBeanReferenceTest extends EasyMockSupport {
 	@SafeVarargs
 	private static <T> Collection<T> createCollection(T... values) {
 		// Don't create a List, that would be too easy.
-		Collection<T> collection = new LinkedHashSet<>();
+		Collection<T> collection = new LinkedBlockingDeque<>( 5 );
 		Collections.addAll( collection, values );
 		return collection;
 	}

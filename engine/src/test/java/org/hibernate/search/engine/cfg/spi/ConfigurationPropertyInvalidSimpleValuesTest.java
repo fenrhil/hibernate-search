@@ -8,10 +8,10 @@ package org.hibernate.search.engine.cfg.spi;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.Function;
 
 import org.hibernate.search.util.common.SearchException;
@@ -242,7 +242,7 @@ public class ConfigurationPropertyInvalidSimpleValuesTest<T> extends EasyMockSup
 	@SafeVarargs
 	private static <T> Collection<T> createCollection(T... values) {
 		// Don't create a List, that would be too easy.
-		Collection<T> collection = new LinkedHashSet<>();
+		Collection<T> collection = new LinkedBlockingDeque<>( 5 );
 		Collections.addAll( collection, values );
 		return collection;
 	}
