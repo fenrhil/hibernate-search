@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
+import org.hibernate.search.util.common.SearchException;
 import org.hibernate.search.util.impl.test.SubTest;
 
 import org.junit.Test;
@@ -138,6 +139,56 @@ public class ConfigurationPropertyValidSimpleValuesTest<T> extends EasyMockSuppo
 	}
 
 	@Test
+	public void withoutDefault_getAndMap() {
+		String key = "withoutDefault_getAndMap";
+		String resolvedKey = "some.prefix." + key;
+		OptionalConfigurationProperty<T> property =
+				testedMethod.apply(
+						ConfigurationProperty.forKey( key )
+				)
+						.build();
+
+		Function<T, Object> mappingFunction = createMock( Function.class );
+		Optional<Object> result;
+		Object expectedMappedValue = new Object();
+
+		// No value -> empty
+		resetAll();
+		EasyMock.expect( sourceMock.get( key ) ).andReturn( Optional.empty() );
+		replayAll();
+		result = property.getAndMap( sourceMock, mappingFunction );
+		verifyAll();
+		assertThat( result ).isEmpty();
+
+		// Valid value -> no exception, mapping function applied
+		resetAll();
+		EasyMock.expect( sourceMock.get( key ) ).andReturn( (Optional) Optional.of( expectedValue ) );
+		EasyMock.expect( mappingFunction.apply( expectedValue ) ).andReturn( expectedMappedValue );
+		replayAll();
+		result = property.getAndMap( sourceMock, mappingFunction );
+		verifyAll();
+		assertThat( result ).contains( expectedMappedValue );
+
+		// Valid value and mapping function fails
+		SimulatedFailure simulatedFailure = new SimulatedFailure( "SIMULATED" );
+		resetAll();
+		EasyMock.expect( sourceMock.get( key ) ).andReturn( (Optional) Optional.of( expectedValue ) );
+		EasyMock.expect( mappingFunction.apply( expectedValue ) ).andThrow( simulatedFailure );
+		EasyMock.expect( sourceMock.resolve( key ) ).andReturn( Optional.of( resolvedKey ) );
+		replayAll();
+		SubTest.expectException( () -> property.getAndMap( sourceMock, mappingFunction ) )
+				.assertThrown()
+				.isInstanceOf( SearchException.class )
+				.hasMessageContaining(
+						"Cannot use value '" + expectedValue
+								+ "' assigned to configuration property '" + resolvedKey + "':"
+				)
+				.hasMessageContaining( simulatedFailure.getMessage() )
+				.hasCause( simulatedFailure );
+		verifyAll();
+	}
+
+	@Test
 	public void withoutDefault_getOrThrow() {
 		String key = "withoutDefault_getOrThrow";
 		String resolvedKey = "some.prefix." + key;
@@ -163,6 +214,96 @@ public class ConfigurationPropertyValidSimpleValuesTest<T> extends EasyMockSuppo
 		EasyMock.expect( sourceMock.get( key ) ).andReturn( (Optional) Optional.of( expectedValue ) );
 		replayAll();
 		T result = property.getOrThrow( sourceMock, SimulatedFailure::new );
+		verifyAll();
+		assertThat( result ).isEqualTo( expectedValue );
+	}
+
+	@Test
+	public void withoutDefault_getAndMapOrThrow() {
+		String key = "withoutDefault_getAndMapOrThrow";
+		String resolvedKey = "some.prefix." + key;
+		OptionalConfigurationProperty<T> property =
+				testedMethod.apply(
+						ConfigurationProperty.forKey( key )
+				)
+						.build();
+
+		Function<T, Object> mappingFunction = createMock( Function.class );
+		Object result;
+
+		// No value -> exception
+		resetAll();
+		EasyMock.expect( sourceMock.get( key ) ).andReturn( Optional.empty() );
+		EasyMock.expect( sourceMock.resolve( key ) ).andReturn( Optional.of( resolvedKey ) );
+		replayAll();
+		SubTest.expectException( () -> property.getAndMapOrThrow( sourceMock, mappingFunction, SimulatedFailure::new ) )
+				.assertThrown()
+				.isInstanceOf( SimulatedFailure.class )
+				.hasMessage( resolvedKey );
+		verifyAll();
+
+		// Valid value -> no exception, mapping function applied
+		Object expectedMappedValue = new Object();
+		resetAll();
+		EasyMock.expect( sourceMock.get( key ) ).andReturn( (Optional) Optional.of( expectedValue ) );
+		EasyMock.expect( mappingFunction.apply( expectedValue ) ).andReturn( expectedMappedValue );
+		replayAll();
+		result = property.getAndMapOrThrow( sourceMock, mappingFunction, SimulatedFailure::new );
+		verifyAll();
+		assertThat( result ).isEqualTo( expectedMappedValue );
+
+		// Valid value and mapping function fails
+		SimulatedFailure simulatedFailure = new SimulatedFailure( "SIMULATED" );
+		resetAll();
+		EasyMock.expect( sourceMock.get( key ) ).andReturn( (Optional) Optional.of( expectedValue ) );
+		EasyMock.expect( mappingFunction.apply( expectedValue ) ).andThrow( simulatedFailure );
+		EasyMock.expect( sourceMock.resolve( key ) ).andReturn( Optional.of( resolvedKey ) );
+		replayAll();
+		SubTest.expectException( () -> property.getAndMap( sourceMock, mappingFunction ) )
+				.assertThrown()
+				.isInstanceOf( SearchException.class )
+				.hasMessageContaining(
+						"Cannot use value '" + expectedValue
+								+ "' assigned to configuration property '" + resolvedKey + "':"
+				)
+				.hasMessageContaining( simulatedFailure.getMessage() )
+				.hasCause( simulatedFailure );
+		verifyAll();
+	}
+
+	@Test
+	public void blankCharacters() {
+		String key = "extraBlankCharacters";
+		ConfigurationProperty<T> property =
+				testedMethod.apply(
+						ConfigurationProperty.forKey( key )
+				)
+						.withDefault( expectedValue )
+						.build();
+
+		T result;
+
+		// Empty string value
+		resetAll();
+		EasyMock.expect( sourceMock.get( key ) ).andReturn( (Optional) Optional.of( "" ) );
+		replayAll();
+		result = property.get( sourceMock );
+		verifyAll();
+		assertThat( result ).isEqualTo( expectedValue );
+
+		// Blank string value
+		resetAll();
+		EasyMock.expect( sourceMock.get( key ) ).andReturn( (Optional) Optional.of( "    " ) );
+		replayAll();
+		result = property.get( sourceMock );
+		verifyAll();
+		assertThat( result ).isEqualTo( expectedValue );
+
+		// String value with extra blank characters
+		resetAll();
+		EasyMock.expect( sourceMock.get( key ) ).andReturn( (Optional) Optional.of( "   " + stringValue + "   " ) );
+		replayAll();
+		result = property.get( sourceMock );
 		verifyAll();
 		assertThat( result ).isEqualTo( expectedValue );
 	}
