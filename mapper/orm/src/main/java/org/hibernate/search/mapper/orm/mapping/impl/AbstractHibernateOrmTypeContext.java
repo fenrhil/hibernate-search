@@ -7,7 +7,6 @@
 package org.hibernate.search.mapper.orm.mapping.impl;
 
 import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.metamodel.spi.MetamodelImplementor;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.search.mapper.orm.event.impl.HibernateOrmListenerTypeContext;
 import org.hibernate.search.mapper.orm.session.impl.HibernateOrmSessionTypeContext;
@@ -26,8 +25,9 @@ abstract class AbstractHibernateOrmTypeContext<E>
 	AbstractHibernateOrmTypeContext(AbstractBuilder<E> builder, SessionFactoryImplementor sessionFactory) {
 		this.typeIdentifier = builder.typeIdentifier;
 		this.jpaEntityName = builder.jpaEntityName;
-		MetamodelImplementor metamodel = sessionFactory.getMetamodel();
-		this.entityPersister = metamodel.entityPersister( builder.hibernateOrmEntityName );
+		@SuppressWarnings("deprecation") // It may have been deprecated, but it's the only way to get an EntityDomainType
+		org.hibernate.metamodel.spi.MetamodelImplementor metamodel = sessionFactory.getMetamodel();
+		this.entityPersister = metamodel.getEntityDescriptor( builder.hibernateOrmEntityName );
 		this.dirtyFilter = builder.dirtyFilter;
 	}
 

@@ -11,8 +11,8 @@ import java.lang.invoke.MethodHandles;
 import java.util.concurrent.CompletableFuture;
 
 import org.hibernate.boot.Metadata;
+import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.spi.BootstrapContext;
-import org.hibernate.boot.spi.MetadataImplementor;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.search.engine.Version;
@@ -44,10 +44,11 @@ public class HibernateSearchIntegrator implements Integrator {
 					.build();
 
 	@Override
-	public void integrate(Metadata metadata, SessionFactoryImplementor sessionFactory,
-			SessionFactoryServiceRegistry serviceRegistry) {
+	public void integrate(Metadata metadata, BootstrapContext bootstrapContext,
+			SessionFactoryImplementor sessionFactory) {
 		log.version( Version.versionString() );
 
+		StandardServiceRegistry serviceRegistry = bootstrapContext.getServiceRegistry();
 		ConfigurationPropertyChecker propertyChecker = ConfigurationPropertyChecker.create();
 		ConfigurationPropertySource propertySource = HibernateOrmIntegrationBooterImpl.getPropertySource(
 				serviceRegistry, propertyChecker
@@ -58,9 +59,6 @@ public class HibernateSearchIntegrator implements Integrator {
 			return;
 		}
 
-		// TODO When we'll move to Hibernate ORM 6, use the bootstrapContext parameter passed to the integrate() method
-		BootstrapContext bootstrapContext = ( (MetadataImplementor) metadata ).getTypeConfiguration()
-				.getMetadataBuildingContext().getBootstrapContext();
 		HibernateOrmIntegrationBooterImpl booter = new HibernateOrmIntegrationBooterImpl.BuilderImpl( metadata, bootstrapContext )
 				.configurationPropertySource( propertySource, propertyChecker )
 				.build();

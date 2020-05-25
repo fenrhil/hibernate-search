@@ -34,6 +34,8 @@ public class OutboxAdditionalJaxbMappingProducer implements org.hibernate.boot.s
 
 	private static final Log log = LoggerFactory.make( Log.class, MethodHandles.lookup() );
 
+	private static final String HIBERNATE_SEARCH = "hibernate-search";
+
 	private static final String OUTBOX_TABLE_NAME = "HIBERNATE_SEARCH_OUTBOX_TABLE";
 
 	private static final String OUTBOX_ENTITY_DEFINITION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -72,7 +74,7 @@ public class OutboxAdditionalJaxbMappingProducer implements org.hibernate.boot.s
 		}
 
 		log.outboxGeneratedEntityMapping( OUTBOX_ENTITY_DEFINITION );
-		Origin origin = new Origin( SourceType.OTHER, "search" );
+		Origin origin = new Origin( SourceType.OTHER, HIBERNATE_SEARCH );
 
 		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream( OUTBOX_ENTITY_DEFINITION.getBytes() );
 		BufferedInputStream bufferedInputStream = new BufferedInputStream( byteArrayInputStream );
@@ -81,7 +83,7 @@ public class OutboxAdditionalJaxbMappingProducer implements org.hibernate.boot.s
 		@SuppressWarnings("unchecked")
 		JaxbHbmHibernateMapping root = (JaxbHbmHibernateMapping) binding.getRoot();
 
-		MappingDocument mappingDocument = new MappingDocument( root, origin, buildingContext );
+		MappingDocument mappingDocument = new MappingDocument( HIBERNATE_SEARCH, root, origin, buildingContext );
 		return Collections.singletonList( mappingDocument );
 	}
 }

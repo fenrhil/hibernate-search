@@ -134,10 +134,9 @@ public class IdentifierProducer<E, I> implements StatelessSessionAwareRunnable {
 
 		ArrayList<I> destinationList = new ArrayList<>( batchSize );
 		long counter = 0;
-		try ( ScrollableResults results = createIdentifiersQuery( session ).scroll( ScrollMode.FORWARD_ONLY ) ) {
+		try ( ScrollableResults<I> results = createIdentifiersQuery( session ).scroll( ScrollMode.FORWARD_ONLY ) ) {
 			while ( results.next() ) {
-				@SuppressWarnings("unchecked")
-				I id = (I) results.get( 0 );
+				I id = results.get();
 				destinationList.add( id );
 				if ( destinationList.size() == batchSize ) {
 					// Explicitly checking whether the TX is still open; Depending on the driver implementation new ids

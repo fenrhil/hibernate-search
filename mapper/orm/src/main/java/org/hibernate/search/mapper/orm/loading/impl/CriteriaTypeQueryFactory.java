@@ -17,23 +17,21 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.metamodel.model.domain.spi.EntityTypeDescriptor;
+import org.hibernate.metamodel.model.domain.EntityDomainType;
 import org.hibernate.query.Query;
 
 class CriteriaTypeQueryFactory<E, I> implements TypeQueryFactory<E, I> {
 
-	public static <E> CriteriaTypeQueryFactory<E, ?> create(EntityTypeDescriptor<E> typeDescriptor,
+	public static <E> CriteriaTypeQueryFactory<E, ?> create(EntityDomainType<E> type,
 			String uniquePropertyName) {
-		return new CriteriaTypeQueryFactory<>( typeDescriptor,
-				typeDescriptor.getSingularAttribute( uniquePropertyName ) );
+		return new CriteriaTypeQueryFactory<>( type, type.getSingularAttribute( uniquePropertyName ) );
 	}
 
-	private final EntityTypeDescriptor<E> typeDescriptor;
+	private final EntityDomainType<E> type;
 	private final SingularAttribute<? super E, I> uniqueProperty;
 
-	private CriteriaTypeQueryFactory(EntityTypeDescriptor<E> typeDescriptor,
-			SingularAttribute<? super E, I> uniqueProperty) {
-		this.typeDescriptor = typeDescriptor;
+	private CriteriaTypeQueryFactory(EntityDomainType<E> type, SingularAttribute<? super E, I> uniqueProperty) {
+		this.type = type;
 		this.uniqueProperty = uniqueProperty;
 	}
 
@@ -42,7 +40,7 @@ class CriteriaTypeQueryFactory<E, I> implements TypeQueryFactory<E, I> {
 			Set<? extends Class<? extends E>> includedTypesFilter) {
 		CriteriaBuilder criteriaBuilder = session.getFactory().getCriteriaBuilder();
 		CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery( Long.class );
-		Root<E> root = criteriaQuery.from( typeDescriptor );
+		Root<E> root = criteriaQuery.from( type );
 		criteriaQuery.select( criteriaBuilder.count( root ) );
 		if ( !includedTypesFilter.isEmpty() ) {
 			criteriaQuery.where( root.type().in( includedTypesFilter ) );
@@ -55,7 +53,7 @@ class CriteriaTypeQueryFactory<E, I> implements TypeQueryFactory<E, I> {
 			Set<? extends Class<? extends E>> includedTypesFilter) {
 		CriteriaBuilder criteriaBuilder = session.getFactory().getCriteriaBuilder();
 		CriteriaQuery<I> criteriaQuery = criteriaBuilder.createQuery( uniqueProperty.getJavaType() );
-		Root<E> root = criteriaQuery.from( typeDescriptor );
+		Root<E> root = criteriaQuery.from( type );
 		Path<I> idPath = root.get( uniqueProperty );
 		criteriaQuery.select( idPath );
 		if ( !includedTypesFilter.isEmpty() ) {
@@ -68,8 +66,8 @@ class CriteriaTypeQueryFactory<E, I> implements TypeQueryFactory<E, I> {
 	public Query<E> createQueryForLoadByUniqueProperty(SessionImplementor session, String parameterName) {
 		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
 		ParameterExpression<Collection> idsParameter = criteriaBuilder.parameter( Collection.class, parameterName );
-		CriteriaQuery<E> criteriaQuery = criteriaBuilder.createQuery( typeDescriptor.getJavaType() );
-		Root<E> root = criteriaQuery.from( typeDescriptor );
+		CriteriaQuery<E> criteriaQuery = criteriaBuilder.createQuery( type.getJavaType() );
+		Root<E> root = criteriaQuery.from( type );
 		Path<?> uniquePropertyInRoot = root.get( uniqueProperty );
 		criteriaQuery.where( uniquePropertyInRoot.in( idsParameter ) );
 		return session.createQuery( criteriaQuery );

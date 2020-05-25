@@ -313,8 +313,8 @@
                         <hibernateSearchMigrationGuidesIndexUrl>https://hibernate.org/search/documentation/migrate/</hibernateSearchMigrationGuidesIndexUrl>
                         <hibernateCommunityUrl>https://hibernate.org/community</hibernateCommunityUrl>
                         <hibernateBlogUrl>https://in.relation.to/</hibernateBlogUrl>
-                        <hibernateVersion>${version.org.hibernate}</hibernateVersion>
-                        <hibernateDocUrl>${documentation.org.hibernate.url}</hibernateDocUrl>
+                        <hibernateVersion>${version.org.hibernate.orm}</hibernateVersion>
+                        <hibernateDocUrl>${documentation.org.hibernate.orm.url}</hibernateDocUrl>
                         <jpaVersion>${parsed-version.javax.persistence.majorVersion}.${parsed-version.javax.persistence.minorVersion}</jpaVersion>
                         <luceneVersion>${version.org.apache.lucene}</luceneVersion>
                         <luceneJavadocUrl>${javadoc.org.apache.lucene.core.url}</luceneJavadocUrl>
