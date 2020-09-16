@@ -26,8 +26,6 @@
         <module>mapper/orm-batch-jsr352</module>
         <module>performance</module>
         <module>showcase/library</module>
-        <module>v5migrationhelper/engine</module>
-        <module>v5migrationhelper/orm</module>
     </modules>
 
     <profiles>
