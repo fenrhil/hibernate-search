@@ -58,14 +58,14 @@ class HibernateOrmNonEntityIdPropertyEntityLoader<E> extends AbstractHibernateOr
 			if ( ids.size() >= fetchSize ) {
 				// Don't reuse the query; see https://hibernate.atlassian.net/browse/HHH-14439
 				Query<E> query = createQuery( fetchSize, timeout );
-				query.setParameterList( IDS_PARAMETER_NAME, ids );
+				query.setParameter( IDS_PARAMETER_NAME, ids );
 				addResults( entityById, query.getResultList() );
 				ids.clear();
 			}
 		}
 		if ( !ids.isEmpty() ) {
 			Query<E> query = createQuery( fetchSize, timeout );
-			query.setParameterList( IDS_PARAMETER_NAME, ids );
+			query.setParameter( IDS_PARAMETER_NAME, ids );
 			addResults( entityById, query.getResultList() );
 		}
 

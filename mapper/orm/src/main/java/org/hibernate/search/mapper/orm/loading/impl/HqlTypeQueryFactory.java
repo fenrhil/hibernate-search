@@ -60,7 +60,7 @@ class HqlTypeQueryFactory<E, I> implements TypeQueryFactory<E, I> {
 		}
 		Query<T> query = session.createQuery( hql, returnedType );
 		if ( !includedTypesFilter.isEmpty() ) {
-			query.setParameterList( "types", includedTypesFilter );
+			query.setParameter( "types", includedTypesFilter );
 		}
 		return query;
 	}

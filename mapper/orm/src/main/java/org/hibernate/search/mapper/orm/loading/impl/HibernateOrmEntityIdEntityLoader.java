@@ -56,7 +56,7 @@ class HibernateOrmEntityIdEntityLoader<E> extends AbstractHibernateOrmEntityLoad
 			if ( ids.size() >= fetchSize ) {
 				// Don't reuse the query; see https://hibernate.atlassian.net/browse/HHH-14439
 				Query<E> query = createQuery( fetchSize, timeout );
-				query.setParameterList( IDS_PARAMETER_NAME, ids );
+				query.setParameter( IDS_PARAMETER_NAME, ids );
 				// The result is worthless, as entities are not in the right order.
 				// However, this will load entities into the persistence context... see further down.
 				query.getResultList();
@@ -65,7 +65,7 @@ class HibernateOrmEntityIdEntityLoader<E> extends AbstractHibernateOrmEntityLoad
 		}
 		if ( !ids.isEmpty() ) {
 			Query<E> query = createQuery( fetchSize, timeout );
-			query.setParameterList( IDS_PARAMETER_NAME, ids );
+			query.setParameter( IDS_PARAMETER_NAME, ids );
 			// Same as above: the result is worthless.
 			query.getResultList();
 		}
